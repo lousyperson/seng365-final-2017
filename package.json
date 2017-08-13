@@ -2,7 +2,6 @@
   "name": "SEN365-Assignment1",
   "description": "A simple crowd-funding website",
   "version": "0.0.1",
-  "main": "app.js",
   "scripts": {
     "start": "node app.js"
   },
