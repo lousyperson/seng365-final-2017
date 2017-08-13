@@ -1,10 +1,14 @@
 {
-  "name": "application-name",
+  "name": "SEN365-Assignment1",
+  "description": "A simple crowd-funding website",
   "version": "0.0.1",
+  "main": "app.js",
   "scripts": {
-    "start": "node test.js"
+    "start": "node init"
   },
   "dependencies": {
-    "mysql": "^2.13.0"
+    "express": "^4.15.3",
+    "mysql": "^2.13.0",
+    "body-parser": "^1.17.2"
   }
 }
