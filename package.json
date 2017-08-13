@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "main": "app.js",
   "scripts": {
-    "start": "node init"
+    "start": "node app.js"
   },
   "dependencies": {
     "express": "^4.15.3",
