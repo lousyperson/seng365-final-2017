@@ -6,12 +6,11 @@ const state = {
 
 exports.connect = function(done) {
     state.pool = mysql.createPool({
-        // host: process.env.SENG365_MYSQL_HOST || 'localhost',
-        // port: process.env.SENG365_MYSQL_PORT || 6033,
-        // user: 'root',
+        host: process.env.SENG365_MYSQL_HOST || 'localhost',
+        port: process.env.SENG365_MYSQL_PORT || 6033,
         // database: "mysql",
-        host: 'localhost',
-        port: '6033',
+        // host: 'localhost',
+        // port: '6033',
         user: 'root',
         password: "secret",
         multipleStatements: true
