@@ -9,7 +9,7 @@ module.exports = function () {
     }));
     app.use(bodyParser.json());
 
-    require('../app/routes/users.server.routes.js')(app);
+    require('../app/routes/server.routes.js')(app);
 
     return app;
 };

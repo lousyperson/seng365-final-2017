@@ -22,9 +22,3 @@ exports.connect = function(done) {
 exports.get = function() {
     return state.pool;
 };
-
-// exports.changeDb = function (db) {
-//     state.pool.changeUser({database: db}, function (err) {
-//         if (err) console.log(err)
-//     });
-// };
