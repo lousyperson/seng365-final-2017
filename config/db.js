@@ -5,7 +5,6 @@ const state = {
 };
 
 exports.connect = function(done) {
-    mysql.createConnection({multipleStatements: true});
     state.pool = mysql.createPool({
         // host: process.env.SENG365_MYSQL_HOST || 'localhost',
         // port: process.env.SENG365_MYSQL_PORT || 6033,
@@ -13,8 +12,9 @@ exports.connect = function(done) {
         // database: "mysql",
         host: 'localhost',
         port: '6033',
-        user: 'seng365',
-        password: "secret"
+        user: 'root',
+        password: "secret",
+        multipleStatements: true
     });
     done();
 };
@@ -22,3 +22,9 @@ exports.connect = function(done) {
 exports.get = function() {
     return state.pool;
 };
+
+// exports.changeDb = function (db) {
+//     state.pool.changeUser({database: db}, function (err) {
+//         if (err) console.log(err)
+//     });
+// };
