@@ -26,8 +26,14 @@ exports.insert = function (user, password, done) {
     let values = [username, location, email, password];
 
     db.get().query('INSERT INTO users (username, location, email, password) VALUES (?, ?, ?, ?)', values, function (err, result) {
-        if (err) return done({"error": "Malformed request"});
-        done({"ok": "OK"});
+        if (err) {
+            return done({"error": "Malformed request"});
+        }
+        if (result.affectedRows === 1) {
+            return done({"ok": result.insertId});
+        } else {
+            return done({"error": "Malformed request"});
+        }
     });
 };
 

@@ -18,10 +18,16 @@ exports.create = function (req, res) {
     let password = req.body.password;
 
     User.insert(user, password, function (result) {
-        if (result.error) {
-            res.sendStatus(400)
+        if (result.ok) {
+            res.statusMessage = "OK";
+            res.status(201);
+            res.json(result['ok']);
+            res.end();
         } else {
-            res.json(1);
+            res.statusMessage = "Malformed request";
+            res.status(400);
+            res.json(0);
+            res.end();
         }
     });
 };
