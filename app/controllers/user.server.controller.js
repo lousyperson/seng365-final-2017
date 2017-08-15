@@ -57,6 +57,29 @@ exports.delete = function (req, res) {
     return null;
 };
 
+// done-ish
 exports.userById = function (req, res) {
-    return null;
+    let userId = Number(req.params.id);
+
+    if (!(userId >= 1)) {
+        res.statusMessage = "Invalid id supplied";
+        res.status(400);
+        res.json({});
+        res.end();
+        return;
+    }
+
+    User.getOne(userId, function (result) {
+        if (result.length === 1) {
+            res.statusMessage = "OK";
+            res.status(200);
+            res.json(result[0]);
+            res.end();
+        } else {
+            res.statusMessage = "User not found";
+            res.status(404);
+            res.json({});
+            res.end();
+        }
+    })
 };

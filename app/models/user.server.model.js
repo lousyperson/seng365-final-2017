@@ -9,9 +9,9 @@ exports.getAll = function (done) {
     });
 };
 
+// done-ish
 exports.getOne = function (userId, done) {
-    db.get().query('SELECT * FROM users WHERE user_id = ?', userId, function (err, rows) {
-        if (err) return done(err);
+    db.get().query('SELECT user_id as id, username, location, email FROM users WHERE user_id=?', userId, function (err, rows) {
         done(rows);
     });
 };

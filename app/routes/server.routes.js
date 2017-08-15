@@ -61,7 +61,7 @@ module.exports = function (app) {
         // .post(users.logout)
 
     app.route('/users/:id')
-        // .get(users.view)
+        .get(users.userById)  // done-ish
         // .put(users.update)
         // .delete(users.delete)
 };
