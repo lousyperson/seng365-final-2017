@@ -48,7 +48,7 @@ module.exports = function (app) {
         // .post(projects.pledge)
 
     app.route('/projects/:id/rewards')
-        // .get(rewards.list)
+        .get(rewards.list)  // done-ish
         // .put(rewards.update)
 
     app.route('/users')

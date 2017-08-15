@@ -23,16 +23,16 @@ exports.insert = function (user_data, done) {
         user_data['rewards'].forEach(insert_creator);
     }
 
-
-
     done()
 };
 
-// testing use
-exports.getAll = function (done) {
-    db.get().query('SELECT * FROM rewards', function (err, rows) {
-        if (err) return done({"ERROR": "Error selecting"});
-
-        return done(rows);
+// done-ish
+exports.getAll = function (project_id, done) {
+    db.get().query('SELECT rewards_id as id, amount, description FROM rewards WHERE project_id=?', [project_id], function (err, result) {
+        if (result.length > 0) {
+            return done(result)
+        } else {
+            return done()
+        }
     });
 };
