@@ -9,7 +9,6 @@ exports.insert = function (user_data, done) {
         let description = element['description'];
 
         let values = [project_id, reward_id, amount, description];
-        console.log("reward " + values);
 
         db.get().query('INSERT INTO rewards (project_id, reward_id, amount, description) VALUES (?, ?, ?, ?)', values, function (err, result) {
             // console.log(result)
