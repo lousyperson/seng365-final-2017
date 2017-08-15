@@ -35,7 +35,7 @@ module.exports = function (app) {
         // .put(rewards.update)
 
     app.route('/users')
-        // .post(users.create)
+        .post(users.create);  // done-ish
 
     app.route('/users/login')
         // .post(users.login)

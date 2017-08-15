@@ -6,18 +6,18 @@ exports.list = function (req, res) {
     });
 };
 
+// done-ish
 exports.create = function (req, res) {
-    let user_data = {
-        "username": req.body.username
+    let user = {
+        "id": req.body.user.id,
+        "username": req.body.user.username,
+        "location": req.body.user.location,
+        "email": req.body.user.email,
     };
 
-    let user = user_data['username'].toString();
+    let password = req.body.password;
 
-    let values = [
-        [user]
-    ];
-
-    User.insert(values, function (result) {
+    User.insert(user, password, function (result) {
         res.json(result);
     });
 };

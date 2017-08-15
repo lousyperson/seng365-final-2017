@@ -47,11 +47,11 @@ function create_users_table() {
         "DROP TABLE IF EXISTS users;" +
         "CREATE TABLE users" +
         "(" +
-        "user_id    int         auto_increment  ," +
-        "username   varchar(30) not null        ," +
-        "location   varchar(30)                 ," +
-        "email      varchar(30)                 ," +
-        "password   varchar(30) not null        ," +
+        "user_id    int         auto_increment          ," +
+        "username   varchar(30) not null        unique ," +
+        "location   varchar(30)                         ," +
+        "email      varchar(30)                         ," +
+        "password   varchar(30) not null                ," +
         "primary key (user_id)" +
         ");";
 

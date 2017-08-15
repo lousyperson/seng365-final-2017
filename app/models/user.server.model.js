@@ -15,12 +15,17 @@ exports.getOne = function (userId, done) {
     });
 };
 
-exports.insert = function (username, done) {
-    let values = [username];
+// done-ish
+exports.insert = function (user, password, done) {
+    let id = user['id'];  // auto-generate
+    let username = user['username'].toString();
+    let location = user['location'].toString();
+    let email = user['email'].toString();
 
-    db.get().query('INSERT INTO users (username) VALUES ?', values, function (err, result) {
+    let values = [username, location, email, password];
+
+    db.get().query('INSERT INTO users (username, location, email, password) VALUES (?, ?, ?, ?)', values, function (err, result) {
         if (err) return done(err);
-
         done(result);
     });
 };
