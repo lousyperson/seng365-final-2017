@@ -19,8 +19,8 @@ db.connect(function (err) {
 
 function init_database() {
     const clear_database =
-        "CREATE DATABASE IF NOT EXISTS crowd_funding;" +
-        "USE crowd_funding;" +
+        // "CREATE DATABASE IF NOT EXISTS crowd_funding;" +
+        // "USE crowd_funding;" +
         "SET FOREIGN_KEY_CHECKS = 0;" +
         "DROP TABLE IF EXISTS users;" +
         "DROP TABLE IF EXISTS projects;" +
@@ -43,7 +43,7 @@ function create_tables() {
 
 function create_users_table() {
     const create_users_table =
-        "USE crowd_funding; " +
+        // "USE crowd_funding; " +
         "DROP TABLE IF EXISTS users;" +
         "CREATE TABLE users" +
         "(" +
@@ -62,7 +62,7 @@ function create_users_table() {
 
 function create_projects_table() {
     const create_projects_table =
-        "USE crowd_funding; " +
+        // "USE crowd_funding; " +
         "DROP TABLE IF EXISTS projects;" +
         "CREATE TABLE projects " +
         "(" +
@@ -84,7 +84,7 @@ function create_projects_table() {
 
 function create_creators_table() {
     const create_creators_table =
-        "USE crowd_funding; " +
+        // "USE crowd_funding; " +
         "DROP TABLE IF EXISTS creators;" +
         "CREATE TABLE creators " +
         "(" +
@@ -105,7 +105,7 @@ function create_creators_table() {
 
 function create_rewards_table() {
     const create_rewards_table =
-        "USE crowd_funding; " +
+        // "USE crowd_funding; " +
         "DROP TABLE IF EXISTS rewards;" +
         "CREATE TABLE rewards " +
         "(" +
