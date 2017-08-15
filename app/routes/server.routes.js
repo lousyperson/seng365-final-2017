@@ -49,7 +49,7 @@ module.exports = function (app) {
 
     app.route('/projects/:id/rewards')
         .get(rewards.list)  // done-ish
-        // .put(rewards.update)
+        .put(rewards.update); // done-ish (auth)
 
     app.route('/users')
         .post(users.create);  // done-ish

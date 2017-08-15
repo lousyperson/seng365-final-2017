@@ -36,3 +36,27 @@ exports.getAll = function (project_id, done) {
         }
     });
 };
+
+// done-ish (auth)
+exports.update = function (update_data, done) {
+    let project_id = update_data['project_id'];
+    let amount = update_data['amount'];
+    let description = update_data['description'].toString();
+
+    let values = [amount, description, project_id];
+
+    db.get().query('UPDATE rewards SET amount=?, description=? WHERE project_id=?', values, function (err, result) {
+        // if (err) console.log(err);
+        // if (result) console.log(result);
+        if (err) {
+            return done({"malformed": "malformed"})
+        }
+        if (result.affectedRows === 1) {
+            return done({"ok": "ok"})
+        } else if (result.affectedRows < 1) {
+            return done({"notfound": "not found"})
+        } else {
+            return done({"malformed": "malformed"})
+        }
+    })
+};
