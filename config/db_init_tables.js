@@ -15,7 +15,6 @@ exports.init_database = function () {
         if (err) console.log(err);
         else create_tables();
     });
-    console.log("done init")
 };
 
 function create_tables() {
@@ -23,6 +22,7 @@ function create_tables() {
     create_projects_table();
     create_creators_table();
     create_rewards_table();
+    create_tokens_table();
 }
 
 function create_users_table() {
@@ -106,4 +106,19 @@ function create_rewards_table() {
     db.get().query(create_rewards_table, function (err, rows) {
         if (err) console.log(err);
     });
+}
+
+function create_tokens_table() {
+    const create_tokens_table =
+        "DROP TABLE IF EXISTS tokens;" +
+        "CREATE TABLE tokens " +
+        "(" +
+        "user_id    int         ," +
+        "token      varchar(30) ," +
+        "PRIMARY KEY (user_id)" +
+        ");";
+
+    db.get().query(create_tokens_table, function (err, rows) {
+        if (err) console.log(err)
+    })
 }

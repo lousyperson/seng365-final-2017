@@ -18,7 +18,27 @@ exports.create = function (req, res) {
     let password = req.body.password;
 
     User.insert(user, password, function (result) {
-        res.json(result);
+        if (result.error) {
+            res.sendStatus(400)
+        } else {
+            res.json(1);
+        }
+    });
+};
+
+// done-ish
+exports.login = function (req, res) {
+    let login_details = {
+        "username": req.body.username,
+        "password": req.body.password
+    };
+
+    User.login(login_details, function (result) {
+        if (result.error) {
+            res.sendStatus(400)
+        } else {
+            res.json(result);
+        }
     });
 };
 

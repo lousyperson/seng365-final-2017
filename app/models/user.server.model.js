@@ -1,4 +1,5 @@
 const db = require('../../config/db.js');
+const crypto = require('crypto');
 
 exports.getAll = function (done) {
     db.get().query('SELECT * FROM users', function (err, rows) {
@@ -25,8 +26,30 @@ exports.insert = function (user, password, done) {
     let values = [username, location, email, password];
 
     db.get().query('INSERT INTO users (username, location, email, password) VALUES (?, ?, ?, ?)', values, function (err, result) {
-        if (err) return done(err);
-        done(result);
+        if (err) return done({"error": "Malformed request"});
+        done({"ok": "OK"});
+    });
+};
+
+// done-ish
+exports.login = function (user_details, done) {
+    let username = user_details['username'].toString();
+    let password = user_details['password'].toString();
+
+    let values = [username, password];
+
+    db.get().query('SELECT COUNT(*) AS count, user_id as id FROM users WHERE username=? and password=?', values, function (err, result) {
+        if (err || result[0].count !== 1) {
+            return done({"error": "Invalid username/password supplied"})
+        }
+        else {
+            let token = crypto.randomBytes(64).toString('hex');
+            let update_token_query = "INSERT INTO tokens VALUES (?, ?) ON DUPLICATE KEY UPDATE user_id=?";
+            let token_values = [username, token, username];
+            db.get().query(update_token_query, token_values, function (err, token_result) {
+                return done({"id": result[0].id, "token": token})
+            })
+        }
     });
 };
 
