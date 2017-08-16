@@ -34,10 +34,10 @@ module.exports = function (app) {
     app.route('/projects')
         // .all(authenWare)
         .get(projects.list)  // done
-        .post(projects.create);  // progress
+        .post(projects.create);  // done-ish (auth)
 
     app.route('/projects/:id')
-        // .get(projects.read)
+        .get(projects.read)  // assume
         // .put(projects.update)
 
     app.route('/projects/:id/image')

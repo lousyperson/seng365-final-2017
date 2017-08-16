@@ -23,6 +23,7 @@ function create_tables() {
     create_creators_table();
     create_rewards_table();
     create_tokens_table();
+    create_backers_table();
 }
 
 function create_users_table() {
@@ -50,14 +51,15 @@ function create_projects_table() {
         "DROP TABLE IF EXISTS projects;" +
         "CREATE TABLE projects " +
         "(" +
-        "project_id     int             auto_increment  ," +
-        "title          varchar(30)     not null        ," +
-        "subtitle       varchar(30)                     ," +
-        "description    varchar(100)                    ," +
-        "imageUri       varchar(100)                    ," +
-        "target         int             not null        ," +
-        "creators       int                             ," +
-        "rewards        int                             ," +
+        "project_id     int             auto_increment                  ," +
+        "title          varchar(30)     not null                        ," +
+        "subtitle       varchar(30)                                     ," +
+        "description    varchar(100)                                    ," +
+        "imageUri       varchar(100)                                    ," +
+        "target         int             not null                        ," +
+        // "creators       int                                             ," +
+        // "rewards        int                                             ," +
+        "creation_date  timestamp       not null        default now()   ," +
         "PRIMARY KEY (project_id)" +
         ");";
 
@@ -93,11 +95,11 @@ function create_rewards_table() {
         "DROP TABLE IF EXISTS rewards;" +
         "CREATE TABLE rewards " +
         "(" +
-        "rewards_id     int         auto_increment  ," +
-        "project_id     int                         ," +
-        "reward_id      int         not null        ," +
-        "amount         int         not null        ," +
-        "description    varchar(100)                ," +
+        "rewards_id     int         auto_increment              ," +
+        "project_id     int                                     ," +
+        "reward_id      int         not null                    ," +
+        "amount         int         not null        default 1   ," +
+        "description    varchar(100)                            ," +
         // "FOREIGN KEY (rewards_id) references projects(rewards)," +
         // "FOREIGN KEY (project_id) references projects(project_id)," +
         "PRIMARY KEY (rewards_id)" +
@@ -119,6 +121,23 @@ function create_tokens_table() {
         ");";
 
     db.get().query(create_tokens_table, function (err, rows) {
+        if (err) console.log(err)
+    })
+}
+
+function create_backers_table() {
+    const create_backers_table =
+        "DROP TABLE IF EXISTS backers;" +
+        "CREATE TABLE backers " +
+        "(" +
+        "backers_id int                 ," +
+        "user_id    int                 ," +
+        "amount     int                 ," +
+        "project_id int     not null    ," +
+        "PRIMARY KEY (backers_id)" +
+        ");";
+
+    db.get().query(create_backers_table, function (err, rows) {
         if (err) console.log(err)
     })
 }

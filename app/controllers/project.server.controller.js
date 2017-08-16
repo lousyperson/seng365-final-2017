@@ -73,10 +73,21 @@ exports.create = function (req, res) {
     }
 };
 
+// assume
 exports.read = function (req, res) {
-    let id = req.params.userId;
-    Project.getOne(id, function (result) {
-        res.json(result);
+    let project_id = req.params.id;
+    Project.getOne(project_id, function (result) {
+        if (result.error) {
+            res.statusMessage = "Project not found";
+            res.status(404);
+            res.json({});
+            res.end();
+        } else {
+            res.statusMessage = "OK";
+            res.status(200);
+            res.json(result);
+            res.end();
+        }
     });
 };
 
