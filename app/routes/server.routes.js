@@ -41,7 +41,7 @@ module.exports = function (app) {
         // .put(projects.update)
 
     app.route('/projects/:id/image')
-        // .get(projects.read)
+        .get(projects.showImg)  // assume
         // .put(projects.update)
 
     app.route('/projects/:id/pledge')

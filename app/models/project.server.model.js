@@ -81,6 +81,14 @@ exports.getOne = function (project_id, done) {
     });
 };
 
+// assume
+exports.getImg = function (project_id, done) {
+    db.get().query('SELECT imageUri FROM cf_projects WHERE project_id=?', project_id, function (err, rows) {
+        if (err) return done({"error": "error"});
+        done({"imageUri": rows[0].imageUri})  // NOT IN SPEC
+    });
+};
+
 exports.alter = function () {
     return null;
 };

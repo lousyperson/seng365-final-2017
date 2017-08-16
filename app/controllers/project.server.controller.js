@@ -77,7 +77,7 @@ exports.create = function (req, res) {
 exports.read = function (req, res) {
     let project_id = req.params.id;
     Project.getOne(project_id, function (result) {
-        if (result.error) {
+        if (result.error) {  // NOT IN SPEC
             res.statusMessage = "Project not found";
             res.status(404);
             res.json({});
@@ -89,6 +89,22 @@ exports.read = function (req, res) {
             res.end();
         }
     });
+};
+
+// assume
+exports.showImg = function (req, res) {
+    let project_id = req.params.id;
+    Project.getImg(project_id, function (result) {
+        if (result.error) {  // NOT IN SPEC
+            res.statusMessage = "Project not found";
+            res.status(404);
+            res.end();
+        } else {
+            res.statusMessage = "OK";
+            res.status(200);
+            res.end();
+        }
+    })
 };
 
 exports.update = function (req, res) {
