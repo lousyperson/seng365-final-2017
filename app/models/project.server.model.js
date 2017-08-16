@@ -96,3 +96,11 @@ exports.alter = function () {
 exports.remove = function () {
     return null;
 };
+
+// assume
+exports.updateProject = function (project_id, project_status, done) {
+  db.get().query('UPDATE cf_projects SET open_project=? WHERE project_id=?', [project_status, project_id], function (err, rows) {
+      if (err) return done({"error": "error"});
+      done(rows);  // NOT IN SPEC
+  })
+};

@@ -62,6 +62,7 @@ function create_projects_table() {
         // "creators       int                                             ," +
         // "rewards        int                                             ," +
         "creation_date  timestamp       not null        default now()   ," +
+        "open_project   char(5)         default false                   ," +
         "PRIMARY KEY (project_id)" +
         ");";
 
