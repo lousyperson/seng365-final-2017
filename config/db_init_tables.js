@@ -5,10 +5,12 @@ exports.init_database = function () {
         // "CREATE DATABASE IF NOT EXISTS crowd_funding;" +
         // "USE crowd_funding;" +
         "SET FOREIGN_KEY_CHECKS = 0;" +
-        "DROP TABLE IF EXISTS users;" +
-        "DROP TABLE IF EXISTS projects;" +
-        "DROP TABLE IF EXISTS creators;" +
-        "DROP TABLE IF EXISTS rewards;" +
+        "DROP TABLE IF EXISTS cf_users;" +
+        "DROP TABLE IF EXISTS cf_projects;" +
+        "DROP TABLE IF EXISTS cf_creators;" +
+        "DROP TABLE IF EXISTS cf_rewards;" +
+        "DROP TABLE IF EXISTS cf_tokens;" +
+        "DROP TABLE IF EXISTS cf_backers;" +
         "SET FOREIGN_KEY_CHECKS = 1;";
 
     db.get().query(clear_database, function (err, rows) {
@@ -29,8 +31,8 @@ function create_tables() {
 function create_users_table() {
     const create_users_table =
         // "USE crowd_funding; " +
-        "DROP TABLE IF EXISTS users;" +
-        "CREATE TABLE users" +
+        "DROP TABLE IF EXISTS cf_users;" +
+        "CREATE TABLE cf_users" +
         "(" +
         "user_id    int         auto_increment          ," +
         "username   varchar(30) not null        unique ," +
@@ -48,8 +50,8 @@ function create_users_table() {
 function create_projects_table() {
     const create_projects_table =
         // "USE crowd_funding; " +
-        "DROP TABLE IF EXISTS projects;" +
-        "CREATE TABLE projects " +
+        "DROP TABLE IF EXISTS cf_projects;" +
+        "CREATE TABLE cf_projects " +
         "(" +
         "project_id     int             auto_increment                  ," +
         "title          varchar(30)     not null                        ," +
@@ -71,8 +73,8 @@ function create_projects_table() {
 function create_creators_table() {
     const create_creators_table =
         // "USE crowd_funding; " +
-        "DROP TABLE IF EXISTS creators;" +
-        "CREATE TABLE creators " +
+        "DROP TABLE IF EXISTS cf_creators;" +
+        "CREATE TABLE cf_creators " +
         "(" +
         "creators_id    int         auto_increment  ," +
         "project_id     int         not null        ," +
@@ -92,8 +94,8 @@ function create_creators_table() {
 function create_rewards_table() {
     const create_rewards_table =
         // "USE crowd_funding; " +
-        "DROP TABLE IF EXISTS rewards;" +
-        "CREATE TABLE rewards " +
+        "DROP TABLE IF EXISTS cf_rewards;" +
+        "CREATE TABLE cf_rewards " +
         "(" +
         "rewards_id     int         auto_increment              ," +
         "project_id     int                                     ," +
@@ -112,8 +114,8 @@ function create_rewards_table() {
 
 function create_tokens_table() {
     const create_tokens_table =
-        "DROP TABLE IF EXISTS tokens;" +
-        "CREATE TABLE tokens " +
+        "DROP TABLE IF EXISTS cf_tokens;" +
+        "CREATE TABLE cf_tokens " +
         "(" +
         "user_id    int         ," +
         "token      varchar(30) ," +
@@ -127,8 +129,8 @@ function create_tokens_table() {
 
 function create_backers_table() {
     const create_backers_table =
-        "DROP TABLE IF EXISTS backers;" +
-        "CREATE TABLE backers " +
+        "DROP TABLE IF EXISTS cf_backers;" +
+        "CREATE TABLE cf_backers " +
         "(" +
         "backers_id int                 ," +
         "user_id    int                 ," +

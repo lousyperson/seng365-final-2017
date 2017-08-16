@@ -9,7 +9,7 @@ exports.insert = function (user_data, done) {
 
         let values = [project_id, user_id, name];
 
-        db.get().query('INSERT INTO creators (project_id, user_id, name) VALUES (?, ?, ?)', values, function (err, result) {
+        db.get().query('INSERT INTO cf_creators (project_id, user_id, name) VALUES (?, ?, ?)', values, function (err, result) {
             // console.log(result)
             // if (err) return done(err);
             //
@@ -27,7 +27,7 @@ exports.insert = function (user_data, done) {
 
 // testing use
 exports.getAll = function (done) {
-    db.get().query('SELECT * FROM creators', function (err, rows) {
+    db.get().query('SELECT * FROM cf_creators', function (err, rows) {
         if (err) return done({"ERROR": "Error selecting"});
 
         return done(rows);

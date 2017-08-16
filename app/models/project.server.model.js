@@ -2,7 +2,7 @@ const db = require('../../config/db.js');
 
 // done
 exports.getAll = function (done) {
-    db.get().query('SELECT project_id as id, title, subtitle, imageUri FROM projects', function (err, rows) {
+    db.get().query('SELECT project_id as id, title, subtitle, imageUri FROM cf_projects', function (err, rows) {
         if (err) return done({"ERROR": "Error selecting"});
 
         return done(rows);
@@ -19,7 +19,7 @@ exports.insert = function (user_data, done) {
 
     let values = [title, subtitle, description, imageUri, target];
 
-    db.get().query('INSERT INTO projects (title, subtitle, description, imageUri, target) VALUES (?, ?, ?, ?, ?)', values, function (err, result) {
+    db.get().query('INSERT INTO cf_projects (title, subtitle, description, imageUri, target) VALUES (?, ?, ?, ?, ?)', values, function (err, result) {
         if (err) return done(err);
 
         done(result);
@@ -33,27 +33,27 @@ exports.getOne = function (project_id, done) {
     let rewards_row;
     let backers_row;
     let backers_row_progress;
-    db.get().query('SELECT creation_date as creationDate, title, subtitle, description, imageUri, target FROM projects WHERE project_id=?', project_id, function (err, rows) {
+    db.get().query('SELECT creation_date as creationDate, title, subtitle, description, imageUri, target FROM cf_projects WHERE project_id=?', project_id, function (err, rows) {
         if (err) return done({"error": "error"});
         project_rows = rows[0];
     });
 
-    db.get().query('SELECT user_id as id, name FROM creators WHERE project_id=?', project_id, function (err, rows) {
+    db.get().query('SELECT user_id as id, name FROM cf_creators WHERE project_id=?', project_id, function (err, rows) {
         if (err) return done({"error": "error"});
         creators_row = rows;
     });
 
-    db.get().query('SELECT reward_id as id, amount, description FROM rewards WHERE project_id=?', project_id, function (err, rows) {
+    db.get().query('SELECT reward_id as id, amount, description FROM cf_rewards WHERE project_id=?', project_id, function (err, rows) {
         if (err) return done({"error": "error"});
         rewards_row = rows;
     });
 
-    db.get().query('SELECT SUM(amount) as currentPledged, SUM(*) as numberOfBackers FROM backers WHERE project_id=?', project_id, function (err, rows) {
+    db.get().query('SELECT SUM(amount) as currentPledged, SUM(*) as numberOfBackers FROM cf_backers WHERE project_id=?', project_id, function (err, rows) {
         if (err) return done({"error": "error"});
         backers_row_progress = rows[0];
     });
 
-    db.get().query('SELECT user_id as name, amount FROM backers WHERE project_id=?', project_id, function (err, rows) {
+    db.get().query('SELECT user_id as name, amount FROM cf_backers WHERE project_id=?', project_id, function (err, rows) {
         if (err) return done({"error": "error"});
         backers_row = rows;
     });

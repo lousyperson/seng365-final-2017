@@ -10,7 +10,7 @@ exports.insert = function (user_data, done) {
 
         let values = [project_id, reward_id, amount, description];
 
-        db.get().query('INSERT INTO rewards (project_id, reward_id, amount, description) VALUES (?, ?, ?, ?)', values, function (err, result) {
+        db.get().query('INSERT INTO cf_rewards (project_id, reward_id, amount, description) VALUES (?, ?, ?, ?)', values, function (err, result) {
             // console.log(result)
             // if (err) return done(err);
             //
@@ -28,7 +28,7 @@ exports.insert = function (user_data, done) {
 
 // done-ish
 exports.getAll = function (project_id, done) {
-    db.get().query('SELECT rewards_id as id, amount, description FROM rewards WHERE project_id=?', [project_id], function (err, result) {
+    db.get().query('SELECT rewards_id as id, amount, description FROM cf_rewards WHERE project_id=?', [project_id], function (err, result) {
         if (result.length > 0) {
             return done(result)
         } else {
@@ -45,7 +45,7 @@ exports.update = function (update_data, done) {
 
     let values = [amount, description, project_id];
 
-    db.get().query('UPDATE rewards SET amount=?, description=? WHERE project_id=?', values, function (err, result) {
+    db.get().query('UPDATE cf_rewards SET amount=?, description=? WHERE project_id=?', values, function (err, result) {
         // if (err) console.log(err);
         // if (result) console.log(result);
         if (err) {
