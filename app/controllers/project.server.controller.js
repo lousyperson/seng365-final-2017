@@ -142,6 +142,34 @@ exports.update = function (req, res) {
     })
 };
 
+// assume
+exports.updateImg = function (req, res) {
+    // if (NOT LOGIN) {
+    //     res.statusMessage = "Unauthorized - create account to update project";
+    //     res.status(401);
+    //     res.end();
+    // } else if (NOT USER PROJECT) {
+    //     res.statusMessage = "Forbidden - unable to update a project you do not own";
+    //     res.status(403);
+    //     res.end();
+    // }
+
+    let project_id = req.params.id;
+    let image = req.body.image;
+
+    Project.updateImg(project_id, image, function (result) {
+        if (result.affectedRows === 1) {
+            res.statusMessage = "OK";
+            res.status(200);
+            res.end();
+        } else {
+            res.statusMessage = "Malformed request";
+            res.status(400);
+            res.end();
+        }
+    })
+};
+
 exports.delete = function (req, res) {
     return null;
 };

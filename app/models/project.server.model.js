@@ -104,3 +104,11 @@ exports.updateProject = function (project_id, project_status, done) {
       done(rows);  // NOT IN SPEC
   })
 };
+
+// assume
+exports.updateImg = function (project_id, image, done) {
+    db.get().query('UPDATE cf_projects SET imageUri=? WHERE project_id=?', [image, project_id], function (err, rows) {
+        if (err) return done({"error": "error"});
+        done(rows);  // NOT IN SPEC
+    })
+};
