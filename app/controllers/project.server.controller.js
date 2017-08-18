@@ -177,3 +177,43 @@ exports.delete = function (req, res) {
 exports.userById = function (req, res) {
     return null;
 };
+
+// done-ish (auth)
+exports.pledge = function (req, res) {
+    // if (NOT LOGIN) {
+    //     res.statusMessage = "Unauthorized - create account to pledge to a project";
+    //     res.status(401);
+    //     res.end();
+    // } else if (IS USER) {
+    //     res.statusMessage = "Forbidden - cannot pledge to own project - this is fraud!";
+    //     res.status(403);
+    //     res.end();
+    // }
+
+    let project_id = req.params.id;
+    let pledge_data = {
+        "id": req.body.id,
+        "amount": req.body.amount,
+        "anonymous": req.body.anonymous,
+        "card": req.body.card.authToken
+    };
+
+    if (typeof pledge_data['anonymous'] !== "boolean") {
+        res.statusMessage = "bad user, project, or pledge details";
+        res.status(400);
+        res.end();
+        return;
+    }
+
+    Project.pledge(project_id, pledge_data, function (result) {
+        if (result.affectedRows === 1) {
+            res.statusMessage = "OK";
+            res.status(200);
+            res.end();
+        } else {
+            res.statusMessage = "bad user, project, or pledge details";
+            res.status(400);
+            res.end();
+        }
+    })
+};

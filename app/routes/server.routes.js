@@ -45,7 +45,7 @@ module.exports = function (app) {
         .put(projects.updateImg);  // assume
 
     app.route('/projects/:id/pledge')
-        // .post(projects.pledge)
+        .post(projects.pledge);  // done-ish (auth)
 
     app.route('/projects/:id/rewards')
         .get(rewards.list)  // done-ish

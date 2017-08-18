@@ -112,3 +112,18 @@ exports.updateImg = function (project_id, image, done) {
         done(rows);  // NOT IN SPEC
     })
 };
+
+// done-ish (auth)
+exports.pledge = function (project_id, pledge_data, done) {
+    let id = pledge_data['id'];
+    let amount = pledge_data['amount'];
+    let anonymous = pledge_data['anonymous'];
+    let card = pledge_data['card'];
+
+    let values = [id, amount, anonymous, card, project_id];
+
+    db.get().query('INSERT INTO cf_backers (user_id, amount, anonymous, card, project_id) VALUES (?, ?, ?, ?, ?)', values, function (err, rows) {
+        if (err) return done({"error": "error"});
+        done(rows);  // NOT IN SPEC
+    })
+};

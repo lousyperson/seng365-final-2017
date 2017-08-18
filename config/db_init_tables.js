@@ -133,10 +133,12 @@ function create_backers_table() {
         "DROP TABLE IF EXISTS cf_backers;" +
         "CREATE TABLE cf_backers " +
         "(" +
-        "backers_id int                 ," +
-        "user_id    int                 ," +
-        "amount     int                 ," +
-        "project_id int     not null    ," +
+        "backers_id int         auto_increment  ," +
+        "user_id    int                         ," +
+        "amount     int                         ," +
+        "project_id int         not null        ," +
+        "anonymous  char(5)     not null        ," +  // check anonymous later
+        "card       varchar(30)                 ," +
         "PRIMARY KEY (backers_id)" +
         ");";
 
