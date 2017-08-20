@@ -2,6 +2,8 @@ const projects = require('../controllers/project.server.controller');
 const rewards = require('../controllers/reward.server.controller');
 const users = require('../controllers/user.server.controller');
 
+const basePath = "/api/v1";
+
 // ------TESTING PURPOSE------
 function testing(req, res) {
     const db = require('../../config/db.js');
@@ -28,40 +30,40 @@ function testing(req, res) {
 // }
 
 module.exports = function (app) {
-    app.route("/")
+    app.route(basePath + "/")
         .get(testing);
 
-    app.route('/projects')
+    app.route(basePath + '/projects')
         // .all(authenWare)
-        .get(projects.list)  // done
-        .post(projects.create);  // done-ish (auth)
+        .get(projects.listProjects)  // done
+        .post(projects.createProject);  // recheck
 
-    app.route('/projects/:id')
+    app.route(basePath + '/projects/:id')
         .get(projects.read)  // assume
         .put(projects.update);  // assume
 
-    app.route('/projects/:id/image')
+    app.route(basePath + '/projects/:id/image')
         .get(projects.showImg)  // assume
         .put(projects.updateImg);  // assume
 
-    app.route('/projects/:id/pledge')
+    app.route(basePath + '/projects/:id/pledge')
         .post(projects.pledge);  // done-ish (auth)
 
-    app.route('/projects/:id/rewards')
+    app.route(basePath + '/projects/:id/rewards')
         .get(rewards.list)  // done-ish
         .put(rewards.update); // done-ish (auth)
 
-    app.route('/users')
+    app.route(basePath + '/users')
         .post(users.create);  // done-ish
 
-    app.route('/users/login')
+    app.route(basePath + '/users/login')
         .post(users.login);  // done-ish
 
-    app.route('/users/logout')
-        // .post(users.logout)
+    app.route(basePath + '/users/logout')
+        .post(users.logout);  // recheck
 
-    app.route('/users/:id')
+    app.route(basePath + '/users/:id')
         .get(users.userById)  // done-ish
-        // .put(users.update)
-        // .delete(users.delete)
+        .put(users.updateUser)  // assume
+        .delete(users.deleteUser)  // assume
 };

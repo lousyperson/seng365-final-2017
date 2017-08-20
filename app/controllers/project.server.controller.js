@@ -1,9 +1,10 @@
 const Project = require('../models/project.server.model');
 const Reward = require('../models/reward.server.model');
 const Creator = require('../models/creator.server.model');
+const AuthMiddleware = require('../models/authMiddleware');
 
 // done
-exports.list = function (req, res) {
+exports.listProjects = function (req, res) {
     Project.getAll(function (result) {
         res.statusMessage = "OK";
         res.status(200);
@@ -12,14 +13,21 @@ exports.list = function (req, res) {
     });
 };
 
-// done-ish (auth)
-exports.create = function (req, res) {
-    // if (NOT AUTHORISED) {
-    //     res.statusMessage = "Unauthorized - create account to create project";
-    //     res.status(401);
-    //     res.json(0);
-    //     res.end();
-    // }
+// recheck
+exports.createProject = function (req, res) {
+    let auth_user_id;
+
+    AuthMiddleware.checkAuth(req, function (done) {
+        if (done === "not log in" || done === "not account") {
+            res.statusMessage = "Unauthorized - create account to create project";
+            res.status(401);
+            res.json(0);
+            res.end();
+        } else {
+            auth_user_id = done;
+            insert_project();
+        }
+    });
 
     let project_data = {
         "title": req.body.title,
@@ -28,27 +36,6 @@ exports.create = function (req, res) {
         "imageUri": req.body.imageUri,
         "target": req.body.target
     };
-
-    Project.insert(project_data, function (result) {
-        // console.log(JSON.stringify(result));
-        let project_id = result.insertId;
-        if (project_id !== undefined) {
-            insert_creator(project_id);
-            insert_reward(project_id);
-        }
-
-        if (result.affectedRows === 1) {
-            res.statusMessage = "OK";
-            res.status(200);
-            res.json(1);
-            res.end();
-        } else {
-            res.statusMessage = "Malformed project data";
-            res.status(400);
-            res.json(0);
-            res.end();
-        }
-    });
 
     function insert_creator(project_id) {
         let creators_data = {
@@ -71,13 +58,36 @@ exports.create = function (req, res) {
 
         });
     }
+
+    function insert_project() {
+        Project.insertProject(project_data, function (result) {
+            // console.log(JSON.stringify(result));
+            let project_id = result.insertId;
+            if (project_id !== undefined) {
+                insert_creator(project_id);
+                insert_reward(project_id);
+            }
+
+            if (result.affectedRows === 1) {
+                res.statusMessage = "OK";
+                res.status(200);
+                res.json(1);
+                res.end();
+            } else {
+                res.statusMessage = "Malformed project data";
+                res.status(400);
+                res.json(0);
+                res.end();
+            }
+        });
+    }
 };
 
 // assume
 exports.read = function (req, res) {
-    let project_id = req.params.id;
+    let project_id = Number(req.params.id);
     Project.getOne(project_id, function (result) {
-        if (result.error) {  // NOT IN SPEC
+        if (result === false) {
             res.statusMessage = "Project not found";
             res.status(404);
             res.json({});

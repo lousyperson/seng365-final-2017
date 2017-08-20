@@ -41,6 +41,7 @@ exports.insert = function (user, password, done) {
 exports.login = function (user_details, done) {
     let username = user_details['username'].toString();
     let password = user_details['password'].toString();
+    let user_id;
 
     let values = [username, password];
 
@@ -49,20 +50,65 @@ exports.login = function (user_details, done) {
             return done({"error": "Invalid username/password supplied"})
         }
         else {
+            let user_id = Number(result[0].id);
+
             let token = crypto.randomBytes(64).toString('hex');
-            let update_token_query = "INSERT INTO cf_tokens VALUES (?, ?) ON DUPLICATE KEY UPDATE user_id=?";
-            let token_values = [username, token, username];
-            db.get().query(update_token_query, token_values, function (err, token_result) {
-                return done({"id": result[0].id, "token": token})
+            let update_token_query = "INSERT INTO cf_tokens (user_id, token, expiry) VALUES (?, ?, DATE_ADD(NOW(), INTERVAL 24 HOUR)) ON DUPLICATE KEY UPDATE token=token";
+            let token_values = [user_id, token];
+            db.get().query(update_token_query, token_values, function (err, token_insert) {
+
+            });
+            db.get().query('SELECT token FROM cf_tokens WHERE user_id=?', user_id, function (err, token_result) {
+                return done({"id": user_id, "token": token_result[0].token})
             })
+        }
+    });
+
+
+};
+
+// assume
+exports.updateUser = function (update_data, done) {
+    let id = update_data['user']['id'];
+    let username = update_data['user']['username'].toString();
+    let location = update_data['user']['location'].toString();
+    let email = update_data['user']['email'].toString();
+    let password = update_data['password'].toString();
+
+    let values = [username, location, email, password, id];
+
+    db.get().query('SELECT user_id FROM cf_users WHERE user_id=?', id, function (err, check_user_result) {
+        if (err) return done("result");
+        if (check_user_result.length < 1) {
+            return done("User not found")
+        }
+    });
+
+    db.get().query('UPDATE cf_users SET (username, location, email, password) VALUES (?, ?, ?, ?) WHERE user_id=?', values, function (err, update_result) {
+        if (err) return done("error");
+        if (update_result.affectedRows === 1) {
+            return done("ok")
+        } else {
+            return done("error");
         }
     });
 };
 
-exports.alter = function () {
-    return null;
-};
+// assume
+exports.deleteUser = function (user_id, done) {
+    db.get().query('SELECT user_id FROM cf_users WHERE user_id=?', user_id, function (err, check_user_result) {
+        if (err) return done("result");
+        if (check_user_result.length < 1) {
+            return done("User not found")
+        }
+    });
 
-exports.remove = function () {
-    return null;
+    db.get().query('DELETE FROM cf_users WHERE user_id=?', user_id, function (err, delete_result) {
+        if (err) return done("error");
+        if (delete_result.affectedRows === 1) {
+            return done("ok")
+        } else {
+            return done("error")
+        }
+    })
 };

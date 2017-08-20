@@ -57,7 +57,7 @@ function create_projects_table() {
         "title          varchar(30)     not null                        ," +
         "subtitle       varchar(30)                                     ," +
         "description    varchar(100)                                    ," +
-        "imageUri       blob                                            ," +
+        "imageUri       varchar(2048)                                   ," +
         "target         int             not null                        ," +
         // "creators       int                                             ," +
         // "rewards        int                                             ," +
@@ -118,8 +118,9 @@ function create_tokens_table() {
         "DROP TABLE IF EXISTS cf_tokens;" +
         "CREATE TABLE cf_tokens " +
         "(" +
-        "user_id    int         ," +
-        "token      varchar(30) ," +
+        "user_id    int             ," +
+        "token      varchar(150)    ," +
+        "expiry     timestamp       ," +
         "PRIMARY KEY (user_id)" +
         ");";
 
