@@ -7,9 +7,9 @@ exports.list = function (req, res) {
     });
 };
 
-// done-ish
-exports.create = function (req, res) {
-    let user = {
+// done
+exports.createUser = function (req, res) {
+    let user_data = {
         "id": req.body.user.id,
         "username": req.body.user.username,
         "location": req.body.user.location,
@@ -18,16 +18,16 @@ exports.create = function (req, res) {
 
     let password = req.body.password;
 
-    User.insert(user, password, function (result) {
-        if (result.ok) {
-            res.statusMessage = "OK";
-            res.status(201);
-            res.json(result['ok']);
-            res.end();
-        } else {
+    User.insertUser(user_data, password, function (result) {
+        if (result === "error") {
             res.statusMessage = "Malformed request";
             res.status(400);
             res.json(0);
+            res.end();
+        } else {
+            res.statusMessage = "OK";
+            res.status(201);
+            res.json(result);
             res.end();
         }
     });

@@ -54,7 +54,7 @@ module.exports = function (app) {
         .put(rewards.update); // done-ish (auth)
 
     app.route(basePath + '/users')
-        .post(users.create);  // done-ish
+        .post(users.createUser);  // done
 
     app.route(basePath + '/users/login')
         .post(users.login);  // done-ish

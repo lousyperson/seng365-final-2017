@@ -16,8 +16,8 @@ exports.getOne = function (userId, done) {
     });
 };
 
-// done-ish
-exports.insert = function (user, password, done) {
+// done
+exports.insertUser = function (user, password, done) {
     let id = user['id'];  // auto-generate
     let username = user['username'].toString();
     let location = user['location'].toString();
@@ -25,14 +25,19 @@ exports.insert = function (user, password, done) {
 
     let values = [username, location, email, password];
 
-    db.get().query('INSERT INTO cf_users (username, location, email, password) VALUES (?, ?, ?, ?)', values, function (err, result) {
-        if (err) {
-            return done({"error": "Malformed request"});
-        }
-        if (result.affectedRows === 1) {
-            return done({"ok": result.insertId});
+    db.get().query('SELECT username FROM cf_users WHERE username=?', username, function (err, find_unique_username_result) {
+        if (err) return done("error");
+        if (find_unique_username_result.length > 0) {
+            return done("error");
         } else {
-            return done({"error": "Malformed request"});
+            db.get().query('INSERT INTO cf_users (username, location, email, password) VALUES (?, ?, ?, ?)', values, function (err, result) {
+                if (err) return done("error");
+                if (result.affectedRows === 1) {
+                    return done(result.insertId);
+                } else {
+                    return done("error");
+                }
+            });
         }
     });
 };
