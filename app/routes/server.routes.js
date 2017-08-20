@@ -20,7 +20,7 @@ module.exports = function (app) {
     app.route(basePath + '/projects')
         // .all(authenWare)
         .get(projects.listProjects)  // done
-        .post(projects.createProject);  // recheck
+        .post(projects.createProject);  // done
 
     app.route(basePath + '/projects/:id')
         .get(projects.getOne)  // done

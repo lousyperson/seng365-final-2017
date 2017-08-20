@@ -8,20 +8,31 @@ exports.getAll = function (done) {
     });
 };
 
-// recheck
+// done
 exports.insertProject = function (user_data, done) {
-    let title = user_data['title'].toString();
-    let subtitle = user_data['subtitle'].toString();
-    let description = user_data['description'].toString();
-    let imageUri = user_data['imageUri'].toString();
-    let target = user_data['target'];
+    let title;
+    let subtitle;
+    let description;
+    let imageUri;
+    let target;
+    try {
+        title = user_data['title'].toString();
+        subtitle = user_data['subtitle'].toString();
+        description = user_data['description'].toString();
+        imageUri = user_data['imageUri'].toString();
+        target = user_data['target'];
+    } catch (err) {
+        if (err instanceof TypeError) {
+            return done("error");
+        }
+    }
 
     let values = [title, subtitle, description, imageUri, target];
 
     db.get().query('INSERT INTO cf_projects (title, subtitle, description, imageUri, target) VALUES (?, ?, ?, ?, ?)', values, function (err, result) {
-        if (err) return done(err);
-
-        done(result);
+        if (err) { console.log(err); return done("error"); }
+        if (result.affectedRows === 1) return done(result);
+        else return done("error");
     });
 };
 

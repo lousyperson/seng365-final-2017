@@ -1,6 +1,6 @@
 const db = require('../../config/db.js');
 
-// done-ish
+// done
 exports.insert = function (user_data, done) {
     function insert_creator(element, index, array) {
         let project_id = user_data['project_id'];
@@ -39,9 +39,18 @@ exports.getAll = function (project_id, done) {
 
 // assume
 exports.updateReward = function (update_data, auth_user_id, done) {
-    let project_id = update_data['project_id'];
-    let amount = update_data['amount'];
-    let description = update_data['description'].toString();
+    let project_id;
+    let amount;
+    let description;
+    try {
+        project_id = update_data['project_id'];
+        amount = update_data['amount'];
+        description = update_data['description'].toString();
+    } catch (err) {
+        if (err instanceof TypeError) {
+            return done("error");
+        }
+    }
 
     db.get().query('SELECT rewards_id FROM cf_rewards WHERE project_id=?', project_id, function (err, check_reward_exists_rows) {
         if (err) return done("error");

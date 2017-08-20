@@ -1,31 +1,33 @@
 const db = require('../../config/db.js');
 
-// done-ish
-exports.insert = function (user_data, auth_user_id, done) {
+// done
+exports.insert = function (user_data, auth_user_id, project_id, done) {
     function insert_creator(element, index, array) {
-        let project_id = user_data['project_id'];
         let user_id = element['id'];
-        let name = auth_user_id;
 
         if (index === 0) {
             user_id = auth_user_id;
         }
 
-        let values = [project_id, user_id, name];
-
+        let values = [project_id, user_id, user_id];
         db.get().query('INSERT INTO cf_creators (project_id, user_id, name) VALUES (?, ?, ?)', values, function (err, result) {
-            // console.log(result)
-            // if (err) return done(err);
-            //
-            // done(result);
+            if (err) { console.log(err); return done("error") }
         });
     }
 
     if (user_data['creators'] !== undefined) {
-        // console.log(user_data['creators']);
-        user_data['creators'].forEach(insert_creator);
+        if (user_data['creators'].length > 0) {
+            user_data['creators'].forEach(insert_creator);
+        } else {
+            [{
+                "id": auth_user_id
+            }].forEach(insert_creator);
+        }
+    } else {
+        [{
+            "id": auth_user_id
+        }].forEach(insert_creator);
     }
-
     done()
 };
 

@@ -19,10 +19,20 @@ exports.getOne = function (userId, done) {
 
 // done
 exports.insertUser = function (user, password, done) {
-    let id = user['id'];  // auto-generate
-    let username = user['username'].toString();
-    let location = user['location'].toString();
-    let email = user['email'].toString();
+    let id;
+    let username;
+    let location;
+    let email;
+    try {
+        id = user['id'];  // auto-generate
+        username = user['username'].toString();
+        location = user['location'].toString();
+        email = user['email'].toString();
+    } catch (err) {
+        if (err instanceof TypeError) {
+            return done("error");
+        }
+    }
 
     let values = [username, location, email, password];
 
@@ -45,8 +55,16 @@ exports.insertUser = function (user, password, done) {
 
 // done
 exports.login = function (user_details, done) {
-    let username = user_details['username'].toString();
-    let password = user_details['password'].toString();
+    let username;
+    let password;
+    try {
+        username = user_details['username'].toString();
+        password = user_details['password'].toString();
+    } catch (err) {
+        if (err instanceof TypeError) {
+            return done("error");
+        }
+    }
 
     let values = [username, password];
     db.get().query('SELECT COUNT(*) AS count, user_id as id FROM cf_users WHERE username=? and password=?', values, function (err, result) {
@@ -74,12 +92,22 @@ exports.login = function (user_details, done) {
 
 // done
 exports.updateUser = function (update_data, done) {
-    let id = update_data['user']['id'];
-    let username = update_data['user']['username'].toString();
-    let location = update_data['user']['location'].toString();
-    let email = update_data['user']['email'].toString();
-    let password = update_data['password'].toString();
-
+    let id;
+    let username;
+    let location;
+    let email;
+    let password;
+    try {
+        id = update_data['user']['id'];
+        username = update_data['user']['username'].toString();
+        location = update_data['user']['location'].toString();
+        email = update_data['user']['email'].toString();
+        password = update_data['password'].toString();
+    } catch (err) {
+        if (err instanceof TypeError) {
+            return done("error");
+        }
+    }
 
     db.get().query('SELECT COUNT(*) AS count FROM cf_users WHERE user_id=?', id, function (err, check_user_result) {
         if (err) { console.log(err); return done("error"); }

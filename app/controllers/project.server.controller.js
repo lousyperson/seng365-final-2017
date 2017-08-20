@@ -13,7 +13,7 @@ exports.listProjects = function (req, res) {
     });
 };
 
-// recheck
+// done
 exports.createProject = function (req, res) {
     let auth_user_id;
 
@@ -29,21 +29,12 @@ exports.createProject = function (req, res) {
         }
     });
 
-    let project_data = {
-        "title": req.body.title,
-        "subtitle": req.body.subtitle,
-        "description": req.body.description,
-        "imageUri": req.body.imageUri,
-        "target": req.body.target
-    };
-
     function insert_creator(project_id) {
         let creators_data = {
-            "creators": req.body.creators,
-            "project_id": project_id
+            "creators": req.body.creators
         };
 
-        Creator.insert(creators_data, auth_user_id, function (result) {
+        Creator.insert(creators_data, auth_user_id, project_id, function (result) {
 
         });
     }
@@ -60,8 +51,22 @@ exports.createProject = function (req, res) {
     }
 
     function insert_project() {
+        let project_data = {
+            "title": req.body.title,
+            "subtitle": req.body.subtitle,
+            "description": req.body.description,
+            "imageUri": req.body.imageUri,
+            "target": req.body.target
+        };
+
         Project.insertProject(project_data, function (result) {
-            // console.log(JSON.stringify(result));
+            if (result === "error") {
+                res.statusMessage = "Malformed project data";
+                res.status(400);
+                res.json(0);
+                res.end();
+                return;
+            }
             let project_id = result.insertId;
             if (project_id !== undefined) {
                 insert_creator(project_id);
@@ -71,7 +76,7 @@ exports.createProject = function (req, res) {
             if (result.affectedRows === 1) {
                 res.statusMessage = "OK";
                 res.status(200);
-                res.json(1);
+                res.json(project_id);
                 res.end();
             } else {
                 res.statusMessage = "Malformed project data";
