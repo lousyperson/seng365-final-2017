@@ -98,21 +98,24 @@ exports.updateUser = function (update_data, done) {
     });
 };
 
-// assume
+// done
 exports.deleteUser = function (user_id, done) {
-    db.get().query('SELECT user_id FROM cf_users WHERE user_id=?', user_id, function (err, check_user_result) {
-        if (err) return done("result");
-        if (check_user_result.length < 1) {
-            return done("User not found")
+    db.get().query('SELECT COUNT(*) AS count FROM cf_users WHERE user_id=?', user_id, function (err, check_user_result) {
+        if (err) { console.log(err); return done("error"); }
+        if (check_user_result[0].count < 1) return done("not found");
+        else {
+            db.get().query('DELETE FROM cf_users WHERE user_id=?', user_id, function (err, delete_user_rows) {
+                if (err) { console.log(err); return done("error"); }
+                if (delete_user_rows.affectedRows === 1) {
+                    db.get().query('DELETE FROM cf_tokens WHERE user_id=?', user_id, function (err, delete_token_rows) {
+                        if (err) { console.log(err); return done("error"); }
+                        if (delete_token_rows.affectedRows === 1) return done("ok");
+                        else return done("error")
+                    })
+                } else {
+                    return done("error")
+                }
+            })
         }
     });
-
-    db.get().query('DELETE FROM cf_users WHERE user_id=?', user_id, function (err, delete_result) {
-        if (err) return done("error");
-        if (delete_result.affectedRows === 1) {
-            return done("ok")
-        } else {
-            return done("error")
-        }
-    })
 };

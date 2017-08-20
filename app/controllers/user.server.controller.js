@@ -112,14 +112,14 @@ exports.updateUser = function (req, res) {
     }
 };
 
-// assume
+// done
 exports.deleteUser = function (req, res) {
     let auth_user_id;
 
     AuthMiddleware.checkAuth(req, function (result) {
         if (result === "not log in" || result === "no account") {
             res.statusMessage = "Unauthorized - not logged in";
-            res.status(400);
+            res.status(401);
             res.end();
         } else {
             auth_user_id = Number(result);

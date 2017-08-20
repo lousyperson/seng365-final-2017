@@ -49,5 +49,5 @@ module.exports = function (app) {
     app.route(basePath + '/users/:id')
         .get(users.userById)  // done
         .put(users.updateUser)  // done
-        .delete(users.deleteUser)  // assume
+        .delete(users.deleteUser)  // done
 };
