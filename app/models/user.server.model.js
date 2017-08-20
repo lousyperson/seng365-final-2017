@@ -72,7 +72,7 @@ exports.login = function (user_details, done) {
     });
 };
 
-// assume
+// done
 exports.updateUser = function (update_data, done) {
     let id = update_data['user']['id'];
     let username = update_data['user']['username'].toString();
@@ -80,21 +80,20 @@ exports.updateUser = function (update_data, done) {
     let email = update_data['user']['email'].toString();
     let password = update_data['password'].toString();
 
-    let values = [username, location, email, password, id];
 
-    db.get().query('SELECT user_id FROM cf_users WHERE user_id=?', id, function (err, check_user_result) {
-        if (err) return done("result");
-        if (check_user_result.length < 1) {
-            return done("User not found")
-        }
-    });
-
-    db.get().query('UPDATE cf_users SET (username, location, email, password) VALUES (?, ?, ?, ?) WHERE user_id=?', values, function (err, update_result) {
-        if (err) return done("error");
-        if (update_result.affectedRows === 1) {
-            return done("ok")
-        } else {
-            return done("error");
+    db.get().query('SELECT COUNT(*) AS count FROM cf_users WHERE user_id=?', id, function (err, check_user_result) {
+        if (err) { console.log(err); return done("error"); }
+        if (check_user_result[0].count < 1) return done("not found");
+        else {
+            let values = [username, location, email, password, id];
+            db.get().query('UPDATE cf_users SET username=?, location=?, email=?, password=? WHERE user_id=?', values, function (err, update_result) {
+                if (err) { console.log(err); return done("error"); }
+                if (update_result.affectedRows === 1) {
+                    return done("ok")
+                } else {
+                    return done("error");
+                }
+            });
         }
     });
 };

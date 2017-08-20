@@ -62,18 +62,18 @@ exports.read = function (req, res) {
     });
 };
 
-// assume
+// done
 exports.updateUser = function (req, res) {
     let auth_user_id;
 
     AuthMiddleware.checkAuth(req, function (done) {
-        if (done === "not log in" || done === "not account") {
+        if (done === "not log in" || done === "no account") {
             res.statusMessage = "Unauthorized - not logged in";
             res.status(401);
             res.end();
         } else {
-            auth_user_id = done;
-            if (Number(auth_user_id) !== Number(req.params.id)) {
+            auth_user_id = Number(done);
+            if (auth_user_id !== Number(req.params.id)) {
                 res.statusMessage = "Forbidden - account not owned";
                 res.status(403);
                 res.end();

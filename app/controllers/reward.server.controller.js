@@ -24,7 +24,7 @@ exports.updateReward = function (req, res) {
     let auth_user_id;
 
     AuthMiddleware.checkAuth(req, function (done) {
-        if (done === "not log in" || done === "not account") {
+        if (done === "not log in" || done === "no account") {
             res.statusMessage = "Unauthorized - create account to update project";
             res.status(401);
             res.end();
