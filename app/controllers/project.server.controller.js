@@ -83,7 +83,7 @@ exports.createProject = function (req, res) {
     }
 };
 
-// assume
+// done
 exports.getOne = function (req, res) {
     let project_id = Number(req.params.id);
 

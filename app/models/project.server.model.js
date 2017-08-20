@@ -25,7 +25,7 @@ exports.insertProject = function (user_data, done) {
     });
 };
 
-// assume
+// done
 exports.getOne = function (proj_id, done) {
     let project_id = proj_id;
     let project_rows;
