@@ -5,7 +5,7 @@ exports.insert = function (user_data, auth_user_id, done) {
     function insert_creator(element, index, array) {
         let project_id = user_data['project_id'];
         let user_id = element['id'];
-        let name = element['name'];
+        let name = auth_user_id;
 
         if (index === 0) {
             user_id = auth_user_id;

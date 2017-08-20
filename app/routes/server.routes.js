@@ -23,7 +23,7 @@ module.exports = function (app) {
         .post(projects.createProject);  // recheck
 
     app.route(basePath + '/projects/:id')
-        .get(projects.read)  // assume
+        .get(projects.getOne)  // assume
         .put(projects.update);  // assume
 
     app.route(basePath + '/projects/:id/image')

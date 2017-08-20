@@ -26,55 +26,59 @@ exports.insertProject = function (user_data, done) {
 };
 
 // assume
-exports.getOne = function (project_id, done) {
+exports.getOne = function (proj_id, done) {
+    let project_id = proj_id;
     let project_rows;
     let creators_row;
     let rewards_row;
     let backers_row;
     let backers_row_progress;
 
-    db.get().query('SELECT creation_date as creationDate, title, subtitle, description, imageUri, target FROM cf_projects WHERE project_id=?', project_id, function (err, rows) {
-        if (err) console.log(err);
-        if (err) return done(false);
-        project_rows = rows[0];
-        if (perform_done()) return perform_done();
+    let already_return = false;
+
+    db.get().query('SELECT DATE_FORMAT(creation_date, "%d-%m-%Y %T") as creationDate, title, subtitle, description, imageUri, target FROM cf_projects WHERE project_id=?', project_id, function (err, rows) {
+        if (!already_return) {
+            if (err) { console.log(err); already_return=true; return done("error"); }
+            if (rows.length < 1) { already_return=true; return done("error"); }
+            project_rows = rows[0];
+            if (perform_done()) return perform_done();
+        }
     });
 
     db.get().query('SELECT user_id as id, name FROM cf_creators WHERE project_id=?', project_id, function (err, rows) {
-        if (err) console.log(err);
-        if (err) return done(false);
-        creators_row = rows;
-        if (perform_done()) return perform_done();
+        if (!already_return) {
+            if (err) { console.log(err); already_return=true; return done("error"); }
+            if (rows.length < 1) { already_return=true; return done("error"); }
+            creators_row = rows;
+            if (perform_done()) return perform_done();
+        }
     });
 
     db.get().query('SELECT reward_id as id, amount, description FROM cf_rewards WHERE project_id=?', project_id, function (err, rows) {
-        if (err) console.log(err);
-        if (err) return done(false);
-        rewards_row = rows;
-        if (perform_done()) return perform_done();
+        if (!already_return) {
+            if (err) { console.log(err); already_return=true; return done("error"); }
+            rewards_row = rows;
+            if (perform_done()) return perform_done();
+        }
     });
 
     db.get().query('SELECT COALESCE(SUM(amount), 0) as currentPledged, COUNT(*) as numberOfBackers FROM cf_backers WHERE project_id=?', project_id, function (err, rows) {
-        if (err) console.log(err);
-        if (err) return done(false);
-        backers_row_progress = rows[0];
-        if (perform_done()) return perform_done();
+        if (!already_return) {
+            if (err) { console.log(err); already_return=true; return done("error"); }
+            backers_row_progress = rows[0];
+            if (perform_done()) return perform_done();
+        }
     });
 
     db.get().query('SELECT user_id as name, amount FROM cf_backers WHERE project_id=?', project_id, function (err, rows) {
-        if (err) console.log(err);
-        if (err) return done(false);
-        backers_row = rows;
-        if (perform_done()) return perform_done();
+        if (!already_return) {
+            if (err) { console.log(err); already_return=true; return done("error"); }
+            backers_row = rows;
+            if (perform_done()) return perform_done();
+        }
     });
 
     function finish_function() {
-        // console.log(project_rows);
-        // console.log(creators_row);
-        // console.log(rewards_row);
-        // console.log(backers_row);
-        // console.log(backers_row_progress);
-
         return done({
             "project": {
                 "id": project_id,

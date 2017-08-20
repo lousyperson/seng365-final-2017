@@ -84,10 +84,19 @@ exports.createProject = function (req, res) {
 };
 
 // assume
-exports.read = function (req, res) {
+exports.getOne = function (req, res) {
     let project_id = Number(req.params.id);
+
+    if (!(project_id >= 0)) {
+        res.statusMessage = "Project not found";
+        res.status(404);
+        res.json({});
+        res.end();
+        return;
+    }
+
     Project.getOne(project_id, function (result) {
-        if (result === false) {
+        if (result === "error") {
             res.statusMessage = "Project not found";
             res.status(404);
             res.json({});
