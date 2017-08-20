@@ -175,10 +175,10 @@ exports.userById = function (req, res) {
     })
 };
 
-// recheck
+// done
 exports.logout = function (req, res) {
     AuthMiddleware.logout(req, function (done) {
-        if (done === true) {
+        if (done === "ok") {
             res.statusMessage = "OK";
             res.status(200);
             res.end();

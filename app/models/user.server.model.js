@@ -56,7 +56,7 @@ exports.login = function (user_details, done) {
             let user_id = Number(result[0].id);
 
             let token = crypto.randomBytes(64).toString('hex');
-            let update_token_query = "INSERT INTO cf_tokens (user_id, token, expiry) VALUES (?, ?, DATE_ADD(NOW(), INTERVAL 24 HOUR)) ON DUPLICATE KEY UPDATE token=token";
+            let update_token_query = "INSERT INTO cf_tokens (user_id, token, expiry) VALUES (?, ?, DATE_ADD(NOW(), INTERVAL 24 HOUR)) ON DUPLICATE KEY UPDATE expiry=DATE_ADD(NOW(), INTERVAL 24 HOUR)";
             let token_values = [user_id, token];
             db.get().query(update_token_query, token_values, function (err, token_insert) {
                 if (err) return done("error");

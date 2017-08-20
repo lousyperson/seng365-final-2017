@@ -44,7 +44,7 @@ module.exports = function (app) {
         .post(users.login);  // done
 
     app.route(basePath + '/users/logout')
-        .post(users.logout);  // recheck
+        .post(users.logout);  // done
 
     app.route(basePath + '/users/:id')
         .get(users.userById)  // done-ish
