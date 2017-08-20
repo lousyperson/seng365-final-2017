@@ -42,17 +42,15 @@ exports.insertUser = function (user, password, done) {
     });
 };
 
-// done-ish
+// done
 exports.login = function (user_details, done) {
     let username = user_details['username'].toString();
     let password = user_details['password'].toString();
-    let user_id;
 
     let values = [username, password];
-
     db.get().query('SELECT COUNT(*) AS count, user_id as id FROM cf_users WHERE username=? and password=?', values, function (err, result) {
         if (err || result[0].count !== 1) {
-            return done({"error": "Invalid username/password supplied"})
+            return done("error")
         }
         else {
             let user_id = Number(result[0].id);
@@ -61,15 +59,16 @@ exports.login = function (user_details, done) {
             let update_token_query = "INSERT INTO cf_tokens (user_id, token, expiry) VALUES (?, ?, DATE_ADD(NOW(), INTERVAL 24 HOUR)) ON DUPLICATE KEY UPDATE token=token";
             let token_values = [user_id, token];
             db.get().query(update_token_query, token_values, function (err, token_insert) {
-
+                if (err) return done("error");
+                else {
+                    db.get().query('SELECT token FROM cf_tokens WHERE user_id=?', user_id, function (err, token_result) {
+                        if (err) return done("error");
+                        return done({"id": user_id, "token": token_result[0].token})
+                    })
+                }
             });
-            db.get().query('SELECT token FROM cf_tokens WHERE user_id=?', user_id, function (err, token_result) {
-                return done({"id": user_id, "token": token_result[0].token})
-            })
         }
     });
-
-
 };
 
 // assume

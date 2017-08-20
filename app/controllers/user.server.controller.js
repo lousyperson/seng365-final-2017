@@ -33,7 +33,7 @@ exports.createUser = function (req, res) {
     });
 };
 
-// done-ish
+// done
 exports.login = function (req, res) {
     let login_details = {
         "username": req.body.username,
@@ -41,10 +41,16 @@ exports.login = function (req, res) {
     };
 
     User.login(login_details, function (result) {
-        if (result.error) {
-            res.sendStatus(400)
+        if (result === "error") {
+            res.statusMessage = "Invalid username/password supplied";
+            res.status(400);
+            res.json({});
+            res.end();
         } else {
+            res.statusMessage = "OK";
+            res.status(200);
             res.json(result);
+            res.end();
         }
     });
 };

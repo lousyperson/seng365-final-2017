@@ -41,7 +41,7 @@ module.exports = function (app) {
         .post(users.createUser);  // done
 
     app.route(basePath + '/users/login')
-        .post(users.login);  // done-ish
+        .post(users.login);  // done
 
     app.route(basePath + '/users/logout')
         .post(users.logout);  // recheck
