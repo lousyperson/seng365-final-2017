@@ -47,7 +47,7 @@ module.exports = function (app) {
         .post(users.logout);  // done
 
     app.route(basePath + '/users/:id')
-        .get(users.userById)  // done-ish
+        .get(users.userById)  // done
         .put(users.updateUser)  // assume
         .delete(users.deleteUser)  // assume
 };

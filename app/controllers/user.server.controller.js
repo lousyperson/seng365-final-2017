@@ -148,7 +148,7 @@ exports.deleteUser = function (req, res) {
     }
 };
 
-// done-ish
+// done
 exports.userById = function (req, res) {
     let userId = Number(req.params.id);
 
@@ -161,15 +161,20 @@ exports.userById = function (req, res) {
     }
 
     User.getOne(userId, function (result) {
-        if (result.length === 1) {
-            res.statusMessage = "OK";
-            res.status(200);
-            res.json(result[0]);
+        if (result === "error") {
+            res.statusMessage = "Invalid id supplied";
+            res.status(400);
+            res.json({});
             res.end();
-        } else {
+        } else if (result.length < 1) {
             res.statusMessage = "User not found";
             res.status(404);
             res.json({});
+            res.end();
+        } else  {
+            res.statusMessage = "OK";
+            res.status(200);
+            res.json(result[0]);
             res.end();
         }
     })

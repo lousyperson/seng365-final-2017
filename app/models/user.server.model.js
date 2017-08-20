@@ -9,9 +9,10 @@ exports.getAll = function (done) {
     });
 };
 
-// done-ish
+// done
 exports.getOne = function (userId, done) {
     db.get().query('SELECT user_id as id, username, location, email FROM cf_users WHERE user_id=?', userId, function (err, rows) {
+        if (err) { console.log(err); return done("error") }
         done(rows);
     });
 };
