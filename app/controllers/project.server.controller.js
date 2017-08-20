@@ -18,7 +18,7 @@ exports.createProject = function (req, res) {
     let auth_user_id;
 
     AuthMiddleware.checkAuth(req, function (done) {
-        if (done === "not log in" || done === "not account") {
+        if (done === "not log in" || done === "no account") {
             res.statusMessage = "Unauthorized - create account to create project";
             res.status(401);
             res.json(0);
@@ -43,7 +43,7 @@ exports.createProject = function (req, res) {
             "project_id": project_id
         };
 
-        Creator.insert(creators_data, function (result) {
+        Creator.insert(creators_data, auth_user_id, function (result) {
 
         });
     }
@@ -190,40 +190,55 @@ exports.userById = function (req, res) {
 
 // done-ish (auth)
 exports.pledge = function (req, res) {
-    // if (NOT LOGIN) {
-    //     res.statusMessage = "Unauthorized - create account to pledge to a project";
-    //     res.status(401);
-    //     res.end();
-    // } else if (IS USER) {
-    //     res.statusMessage = "Forbidden - cannot pledge to own project - this is fraud!";
-    //     res.status(403);
-    //     res.end();
-    // }
+    let auth_user_id;
 
-    let project_id = req.params.id;
-    let pledge_data = {
-        "id": req.body.id,
-        "amount": req.body.amount,
-        "anonymous": req.body.anonymous,
-        "card": req.body.card.authToken
-    };
-
-    if (typeof pledge_data['anonymous'] !== "boolean") {
-        res.statusMessage = "bad user, project, or pledge details";
-        res.status(400);
-        res.end();
-        return;
-    }
-
-    Project.pledge(project_id, pledge_data, function (result) {
-        if (result.affectedRows === 1) {
-            res.statusMessage = "OK";
-            res.status(200);
+    AuthMiddleware.checkAuth(req, function (done) {
+        if (done === "not log in" || done === "no account") {
+            res.statusMessage = "Unauthorized - create account to pledge to a project";
+            res.status(401);
             res.end();
         } else {
+            auth_user_id = Number(done);
+            pledge_function();
+        }
+    });
+
+    function pledge_function() {
+        let project_id = req.params.id;
+        let pledge_data = {
+            "id": auth_user_id,
+            "amount": req.body.amount,
+            "anonymous": req.body.anonymous,
+            "card": {
+                "authToken": req.body.card.authToken
+            }
+        };
+
+        if (typeof pledge_data['anonymous'] !== "boolean") {
             res.statusMessage = "bad user, project, or pledge details";
             res.status(400);
             res.end();
+            return;
         }
-    })
+
+        Project.pledge(project_id, pledge_data, function (result) {
+            if (result === "error") {
+                res.statusMessage = "Bad user, project, or pledge details";
+                res.status(400);
+                res.end();
+            } else if (result === "is creator") {
+                res.statusMessage = "Forbidden - cannot pledge to own project - this is fraud!";
+                res.status(403);
+                res.end();
+            } else if ("project not found"){
+                res.statusMessage = "Not found";
+                res.status(404);
+                res.end();
+            } else {
+                res.statusMessage = "OK";
+                res.status(200);
+                res.end();
+            }
+        })
+    }
 };

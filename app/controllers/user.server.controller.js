@@ -111,7 +111,7 @@ exports.deleteUser = function (req, res) {
     let auth_user_id;
 
     AuthMiddleware.checkAuth(req, function (result) {
-        if (result === "not log in" || result === "not account") {
+        if (result === "not log in" || result === "no account") {
             res.statusMessage = "Unauthorized - not logged in";
             res.status(400);
             res.end();

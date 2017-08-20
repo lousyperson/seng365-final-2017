@@ -1,11 +1,15 @@
 const db = require('../../config/db.js');
 
 // done-ish
-exports.insert = function (user_data, done) {
+exports.insert = function (user_data, auth_user_id, done) {
     function insert_creator(element, index, array) {
         let project_id = user_data['project_id'];
         let user_id = element['id'];
         let name = element['name'];
+
+        if (index === 0) {
+            user_id = auth_user_id;
+        }
 
         let values = [project_id, user_id, name];
 

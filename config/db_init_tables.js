@@ -139,7 +139,7 @@ function create_backers_table() {
         "amount     int                         ," +
         "project_id int         not null        ," +
         "anonymous  char(5)     not null        ," +  // check anonymous later
-        "card       varchar(30)                 ," +
+        "authToken  varchar(30)                 ," +
         "PRIMARY KEY (backers_id)" +
         ");";
 

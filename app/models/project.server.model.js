@@ -142,12 +142,29 @@ exports.pledge = function (project_id, pledge_data, done) {
     let id = pledge_data['id'];
     let amount = pledge_data['amount'];
     let anonymous = pledge_data['anonymous'];
-    let card = pledge_data['card'];
+    let authToken = pledge_data['card']['authToken'];
 
-    let values = [id, amount, anonymous, card, project_id];
+    db.get().query('SELECT project_id FROM cf_projects WHERE project_id=?', project_id, function (err, project_lookup_result) {
+        if (err) return done("error");
+        if (project_lookup_result.length < 1) {
+            return done("project not found");
+        } else {
+            let creators_id = [];
+            db.get().query('SELECT user_id FROM cf_creators WHERE project_id=?', project_id, function (err, get_creators_id_result) {
+                if (err) return done("error");
+                for (let creator_id of get_creators_id_result) {
+                    creators_id.push(creator_id['user_id'])
+                }
+                if (id in creators_id) {
+                    return done("is creator");
+                }
 
-    db.get().query('INSERT INTO cf_backers (user_id, amount, anonymous, card, project_id) VALUES (?, ?, ?, ?, ?)', values, function (err, rows) {
-        if (err) return done({"error": "error"});
-        done(rows);  // NOT IN SPEC
-    })
+                let values = [id, amount, anonymous, authToken, project_id];
+                db.get().query('INSERT INTO cf_backers (user_id, amount, anonymous, authToken, project_id) VALUES (?, ?, ?, ?, ?)', values, function (err, rows) {
+                    if (err) return done("error");
+                    done("ok");  // NOT IN SPEC
+                })
+            });
+        }
+    });
 };
