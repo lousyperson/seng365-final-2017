@@ -3,6 +3,8 @@ const Reward = require('../models/reward.server.model');
 const Creator = require('../models/creator.server.model');
 const AuthMiddleware = require('../models/authMiddleware');
 
+const Canvas = require('canvas');
+
 // done
 exports.listProjects = function (req, res) {
     Project.getAll(function (result) {
@@ -116,17 +118,30 @@ exports.getOne = function (req, res) {
 };
 
 // assume
-exports.showImg = function (req, res) {
-    let project_id = req.params.id;
+exports.getImg = function (req, res) {
+    let project_id = Number(req.params.id);
+
+
+    if (!(project_id >= 0)) {
+        res.statusMessage = "Malformed request";
+        res.status(400);
+        res.end();
+        return;
+    }
+
     Project.getImg(project_id, function (result) {
-        if (result.error) {  // NOT IN SPEC
-            res.statusMessage = "Project not found";
+        if (result === "error") {
+            res.statusMessage = "Not found";
             res.status(404);
             res.end();
         } else {
             res.statusMessage = "OK";
             res.status(200);
-            res.end();
+
+            let img = new require('canvas').Image;
+            img.src = result;
+
+            res.end(result, 'binary');
         }
     })
 };

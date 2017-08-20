@@ -31,6 +31,7 @@ function create_tables() {
 function create_users_table() {
     const create_users_table =
         // "USE crowd_funding; " +
+        "SET @@global.sql_mode='NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';" +
         "DROP TABLE IF EXISTS cf_users;" +
         "CREATE TABLE cf_users" +
         "(" +
@@ -57,8 +58,8 @@ function create_projects_table() {
         "title          varchar(30)     not null                        ," +
         "subtitle       varchar(30)                                     ," +
         "description    varchar(100)                                    ," +
-        "imageUri       varchar(2048)                                   ," +
-        "target         int             not null                        ," +
+        "imageUri       LONGTEXT                                        ," +
+        "target         int             default 0                       ," +
         // "creators       int                                             ," +
         // "rewards        int                                             ," +
         "creation_date  timestamp       not null        default now()   ," +

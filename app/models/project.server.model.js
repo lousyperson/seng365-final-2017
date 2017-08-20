@@ -123,8 +123,10 @@ exports.getOne = function (proj_id, done) {
 // assume
 exports.getImg = function (project_id, done) {
     db.get().query('SELECT imageUri FROM cf_projects WHERE project_id=?', project_id, function (err, rows) {
-        if (err) return done({"error": "error"});
-        done({"imageUri": rows[0].imageUri})  // NOT IN SPEC
+        if (err) { console.log(err); return done("error"); }
+        if (rows.length < 1) return done("error");
+        if (rows[0].imageUri === undefined) return done("error");
+        else return done(rows[0].imageUri);
     });
 };
 

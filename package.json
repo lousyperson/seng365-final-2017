@@ -9,6 +9,7 @@
     "express": "^4.15.3",
     "mysql": "^2.13.0",
     "body-parser": "^1.17.2",
-    "crypto": "^1.0.1"
+    "crypto": "^1.0.1",
+    "canvas": "^1.6.6"
   }
 }
