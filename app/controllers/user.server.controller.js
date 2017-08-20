@@ -61,7 +61,7 @@ exports.updateUser = function (req, res) {
     let auth_user_id;
 
     AuthMiddleware.checkAuth(req, function (done) {
-        if (done === "not log in") {
+        if (done === "not log in" || done === "not account") {
             res.statusMessage = "Unauthorized - not logged in";
             res.status(401);
             res.end();

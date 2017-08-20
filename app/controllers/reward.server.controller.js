@@ -1,4 +1,5 @@
 const Reward = require('../models/reward.server.model');
+const AuthMiddleware = require('../models/authMiddleware');
 
 // done-ish
 exports.list = function (req, res) {
@@ -18,37 +19,50 @@ exports.list = function (req, res) {
     })
 };
 
-// done-ish (auth)
-exports.update = function (req, res) {
-    // if (NOT LOGIN) {
-    //     res.statusMessage = "Unauthorized - create account to update project";
-    //     res.status(401);
-    //     res.end();
-    // } else if (NOT LOGIN USER PROJECT) {
-    //     res.statusMessage = "Forbidden - unable to update a project you do not own";
-    //     res.status(403);
-    //     res.end();
-    // }
+// assume
+exports.updateReward = function (req, res) {
+    let auth_user_id;
 
-    let update_data = {
-        "project_id": req.params.id,
-        "amount": req.body[0].amount,
-        "description": req.body[0].description
-    };
-
-    Reward.update(update_data, function (result) {
-        if (result['ok']) {
-            res.statusMessage = "OK";
-            res.status(201);
-            res.end();
-        } else if (result['notfound']) {
-            res.statusMessage = "Not found";
-            res.status(404);
+    AuthMiddleware.checkAuth(req, function (done) {
+        if (done === "not log in" || done === "not account") {
+            res.statusMessage = "Unauthorized - create account to update project";
+            res.status(401);
             res.end();
         } else {
-            res.statusMessage = "Malformed request";
-            res.status(400);
-            res.end();
+            auth_user_id = Number(done);
+            update_reward();
         }
-    })
+    });
+
+    function update_reward() {
+        let update_data = {
+            "project_id": req.params.id,
+            "amount": req.body[0].amount,
+            "description": req.body[0].description
+        };
+
+        Reward.updateReward(update_data, auth_user_id, function (result) {
+            if (result === "ok") {
+                res.statusMessage = "OK";
+                res.status(201);
+                res.end();
+            } else if (result === "error") {
+                res.statusMessage = "Malformed request";
+                res.status(400);
+                res.end();
+            } else if (result === "not project") {
+                res.statusMessage = "Forbidden - unable to update a project you do not own";
+                res.status(403);
+                res.end();
+            } else if (result === "not found") {
+                res.statusMessage = "Not found";
+                res.status(404);
+                res.end();
+            } else {
+                res.statusMessage = "Malformed request";
+                res.status(400);
+                res.end();
+            }
+        })
+    }
 };

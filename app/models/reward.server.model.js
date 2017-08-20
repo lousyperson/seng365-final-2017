@@ -37,26 +37,31 @@ exports.getAll = function (project_id, done) {
     });
 };
 
-// done-ish (auth)
-exports.update = function (update_data, done) {
+// assume
+exports.updateReward = function (update_data, auth_user_id, done) {
     let project_id = update_data['project_id'];
     let amount = update_data['amount'];
     let description = update_data['description'].toString();
 
-    let values = [amount, description, project_id];
+    db.get().query('SELECT rewards_id FROM cf_rewards WHERE project_id=?', project_id, function (err, check_reward_exists_rows) {
+        if (err) return done("error");
+        if (check_reward_exists_rows.length < 1) return done("not found");
+        else {
+            let creators_list = [];
+            db.get().query('SELECT user_id FROM cf_creators WHERE project_id=?', project_id, function (err, check_creator_rows) {
+                if (err) return done("error");
+                for (let creator of check_creator_rows) {
+                    creators_list.push(creator);
+                }
+                if (creators_list.indexOf(auth_user_id) === -1) return done("not project");
 
-    db.get().query('UPDATE cf_rewards SET amount=?, description=? WHERE project_id=?', values, function (err, result) {
-        // if (err) console.log(err);
-        // if (result) console.log(result);
-        if (err) {
-            return done({"malformed": "malformed"})
-        }
-        if (result.affectedRows === 1) {
-            return done({"ok": "ok"})
-        } else if (result.affectedRows < 1) {
-            return done({"notfound": "not found"})
-        } else {
-            return done({"malformed": "malformed"})
+                let values = [amount, description, project_id];
+                db.get().query('UPDATE cf_rewards SET amount=?, description=? WHERE project_id=?', values, function (err, result) {
+                    if (err) return done("error");
+                    if (result.affectedRows === 1)  return done("ok");
+                    else return done("error");
+                })
+            })
         }
     })
 };

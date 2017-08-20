@@ -13,22 +13,6 @@ function testing(req, res) {
 }
 // ---------------------------
 
-// function isValidToken(token_string) {
-//     if (token_string) {
-//         return true
-//     } else {
-//         return false
-//     }
-// }
-//
-// function authenWare(req, res, next) {
-//     if (isValidToken(req.get('X-Authorization'))) {
-//         next();
-//     } else {
-//         res.sendStatus(401);
-//     }
-// }
-
 module.exports = function (app) {
     app.route(basePath + "/")
         .get(testing);
@@ -51,7 +35,7 @@ module.exports = function (app) {
 
     app.route(basePath + '/projects/:id/rewards')
         .get(rewards.list)  // done-ish
-        .put(rewards.update); // done-ish (auth)
+        .put(rewards.updateReward); // assume
 
     app.route(basePath + '/users')
         .post(users.createUser);  // done
