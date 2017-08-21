@@ -138,12 +138,24 @@ exports.updateProject = function (project_id, project_status, done) {
   })
 };
 
-// assume
-exports.updateImg = function (project_id, image, done) {
-    db.get().query('UPDATE cf_projects SET imageUri=? WHERE project_id=?', [image, project_id], function (err, rows) {
+// done
+exports.updateImg = function (project_id, image, id, done) {
+    db.get().query('SELECT COUNT(*) AS count FROM cf_projects WHERE project_id=?', project_id, function (err, project_lookup_result) {
         if (err) { console.log(err); return done("error"); }
-        done(rows);  // NOT IN SPEC
-    })
+        if (project_lookup_result[0].count === 0) { return done("not found"); }
+
+        let creators_id = [];
+        db.get().query('SELECT user_id FROM cf_creators WHERE project_id=?', project_id, function (err, get_creators_id_result) {
+            if (err) { console.log(err); return done("error"); }
+            for (let creator_id of get_creators_id_result) { creators_id.push(creator_id['user_id']) }
+            if (!(creators_id.indexOf(id) >= 0)) { return done("not creator"); }
+
+            db.get().query('UPDATE cf_projects SET imageUri=? WHERE project_id=?', [image, project_id], function (err, rows) {
+                if (err) { console.log(err); return done("error"); }
+                done("ok");
+            })
+        })
+    });
 };
 
 // done

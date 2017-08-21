@@ -177,48 +177,29 @@ exports.update = function (req, res) {
     })
 };
 
-// assume
+// done
 exports.updateImg = function (req, res) {
     let auth_user_id;
-    // if (NOT LOGIN) {
-    //     res.statusMessage = "Unauthorized - create account to update project";
-    //     res.status(401);
-    //     res.end();
-    // } else if (NOT USER PROJECT) {
-    //     res.statusMessage = "Forbidden - unable to update a project you do not own";
-    //     res.status(403);
-    //     res.end();
-    // }
-    // AuthMiddleware.checkAuth(req, function (done) {
-    //     if (done === "not log in" || done === "no account") {
-    //         res.statusMessage = "Unauthorized - create account to update project";
-    //         res.status(401);
-    //         res.end();
-    //         return;
-    //     }
-    //     auth_user_id = Number(done);
-    //     update_image();
-    // });
-    update_image();
+    AuthMiddleware.checkAuth(req, function (done) {
+        if (done === "not log in" || done === "no account") {
+            res.statusMessage = "Unauthorized - create account to update project";
+            res.status(401);
+            res.end();
+            return;
+        }
+        auth_user_id = Number(done);
+        update_image();
+    });
 
     function update_image() {
         let path = require('path');
 
-        let storage = multer.diskStorage({
-            destination: function(req, file, callback) {
-                callback(null, './uploads')
-            },
-            filename: function(req, file, callback) {
-                callback(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname))
-            }
-        });
-
         let upload = multer({
-            storage: storage,
+            storage: multer.memoryStorage(),
             fileFilter: function(req, file, callback) {
                 let ext = path.extname(file.originalname);
                 if (ext !== '.png' && ext !== '.jpg' && ext !== '.jpeg') {
-                    return callback(res.end('Only images are allowed'), null)
+                    return callback("error", null)
                 }
                 callback(null, true)
             }
@@ -232,55 +213,45 @@ exports.updateImg = function (req, res) {
                 res.end();
             } else {
                 let project_id = Number(req.params.id);
-                let base64Data = req.file;
-                res.end(base64Data, 'binary')
+                if (!(project_id >= 0)) {
+                    res.statusMessage = "Not found";
+                    res.status(404);
+                    res.end();
+                    return;
+                }
 
-                // let base64Data = req.file;
-                // console.log(base64Data);
-                // res.end(base64Data, 'binary');
-                //
-                // fs.writeFile(__dirname + "/upload/out.png", base64Data, 'base64', function(err) {
-                //     if (err) console.log(err);
-                //     fs.readFile(__dirname + "/upload/out.png", function(err, data) {
-                //         if (err) throw err;
-                //         res.end(data, 'binary');
-                //     });
-                // });
+                let buffer = req.file.buffer;
+                let filename = req.file.fieldname + '-' + Date.now() + path.extname(req.file.originalname);
+                fs.writeFile('./uploads/' + filename, buffer, 'binary', function(err) {
+                    if (err) {
+                        console.log(err);
+                        res.statusMessage = "Malformed request";
+                        res.status(400);
+                        res.end();
+                        return;
+                    }
+                    Project.updateImg(project_id, buffer, auth_user_id, function (result) {
+                        if (result === "ok") {
+                            res.statusMessage = "OK";
+                            res.status(200);
+                            res.end();
+                        } else if (result === "not creator") {
+                            res.statusMessage = "Forbidden - unable to update a project you do not own";
+                            res.status(403);
+                            res.end();
+                        } else if (result === "not found") {
+                            res.statusMessage = "Not found";
+                            res.status(404);
+                            res.end();
+                        } else {
+                            res.statusMessage = "Malformed request";
+                            res.status(400);
+                            res.end();
+                        }
+                    })
+                });
             }
-        })
-
-
-        // fs.writeFile(__dirname + "/upload/out.png", base64Data, 'base64', function(err) {
-        //     if (err) console.log(err);
-        //     fs.readFile(__dirname + "/upload/out.png", function(err, data) {
-        //         if (err) throw err;
-        //         console.log('reading file...', data.toString('base64'));
-        //         res.send(data);
-        //     });
-        // });
-
-        // let image = require('fs').readFile(req.body, 'base64', function (err, data) {
-        //
-        // });
-
-        // if (!(project_id >= 0)) {
-        //     res.statusMessage = "Malformed request";
-        //     res.status(400);
-        //     res.end();
-        //     return;
-        // }
-        //
-        // Project.updateImg(project_id, image, function (result) {
-        //     if (result.affectedRows === 1) {
-        //         res.statusMessage = "OK";
-        //         res.status(200);
-        //         res.end();
-        //     } else {
-        //         res.statusMessage = "Malformed request";
-        //         res.status(400);
-        //         res.end();
-        //     }
-        // })
+        });
     }
 };
 
