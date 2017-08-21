@@ -6,7 +6,6 @@ const AuthMiddleware = require('../models/authMiddleware');
 const fs = require('fs');
 const multer = require('multer');
 
-// done
 exports.listProjects = function (req, res) {
     Project.getAll(function (result) {
         res.statusMessage = "OK";
@@ -16,7 +15,6 @@ exports.listProjects = function (req, res) {
     });
 };
 
-// done
 exports.createProject = function (req, res) {
     let auth_user_id;
 
@@ -91,7 +89,6 @@ exports.createProject = function (req, res) {
     }
 };
 
-// done
 exports.getOne = function (req, res) {
     let project_id = Number(req.params.id);
 
@@ -118,7 +115,6 @@ exports.getOne = function (req, res) {
     });
 };
 
-// done
 exports.getImg = function (req, res) {
     let project_id = Number(req.params.id);
 
@@ -142,7 +138,6 @@ exports.getImg = function (req, res) {
     })
 };
 
-// done
 exports.updateProject = function (req, res) {
     let auth_user_id;
     AuthMiddleware.checkAuth(req, function (done) {
@@ -197,7 +192,6 @@ exports.updateProject = function (req, res) {
     }
 };
 
-// done
 exports.updateImg = function (req, res) {
     let auth_user_id;
     AuthMiddleware.checkAuth(req, function (done) {
@@ -283,7 +277,6 @@ exports.userById = function (req, res) {
     return null;
 };
 
-// done
 exports.pledge = function (req, res) {
     let auth_user_id;
     let project_id = Number(req.params.id);

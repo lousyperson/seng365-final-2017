@@ -1,6 +1,5 @@
 const db = require('../../config/db.js');
 
-// done
 exports.insert = function (user_data, auth_user_id, project_id, done) {
     function insert_creator(element, index, array) {
         let user_id = element['id'];
@@ -29,13 +28,4 @@ exports.insert = function (user_data, auth_user_id, project_id, done) {
         }].forEach(insert_creator);
     }
     done()
-};
-
-// testing use
-exports.getAll = function (done) {
-    db.get().query('SELECT * FROM cf_creators', function (err, rows) {
-        if (err) return done({"ERROR": "Error selecting"});
-
-        return done(rows);
-    });
 };

@@ -1,7 +1,6 @@
 const Reward = require('../models/reward.server.model');
 const AuthMiddleware = require('../models/authMiddleware');
 
-// done
 exports.listRewards = function (req, res) {
     let project_id = Number(req.params.id);
 
@@ -28,7 +27,6 @@ exports.listRewards = function (req, res) {
     })
 };
 
-// done
 exports.updateReward = function (req, res) {
     let auth_user_id;
     let project_id = Number(req.params.id);

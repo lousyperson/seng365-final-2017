@@ -1,6 +1,5 @@
 const db = require('../../config/db.js');
 
-// done
 exports.insert = function (user_data, done) {
     function insert_creator(element, index, array) {
         let project_id = user_data['project_id'];
@@ -26,7 +25,6 @@ exports.insert = function (user_data, done) {
     done()
 };
 
-// done
 exports.getAll = function (project_id, done) {
     db.get().query('SELECT reward_id as id, amount, description FROM cf_rewards WHERE project_id=?', [project_id], function (err, result) {
         if (err) { console.log(err); return done("error"); }
@@ -35,7 +33,6 @@ exports.getAll = function (project_id, done) {
     });
 };
 
-// done
 exports.updateReward = function (update_data, auth_user_id, project_id, done) {
     db.get().query('SELECT COUNT(*) AS count FROM cf_projects WHERE project_id=?', project_id, function (err, check_project_exists_rows) {
         if (err) { console.log(err); return done("error"); }

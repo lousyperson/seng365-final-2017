@@ -7,7 +7,6 @@ exports.list = function (req, res) {
     });
 };
 
-// done
 exports.createUser = function (req, res) {
     let user_data = {
         "id": req.body.user.id,
@@ -33,7 +32,6 @@ exports.createUser = function (req, res) {
     });
 };
 
-// done
 exports.login = function (req, res) {
     let login_details = {
         "username": req.body.username,
@@ -62,7 +60,6 @@ exports.read = function (req, res) {
     });
 };
 
-// done
 exports.updateUser = function (req, res) {
     let auth_user_id;
     let user_id = Number(req.params.id);
@@ -120,7 +117,6 @@ exports.updateUser = function (req, res) {
     }
 };
 
-// done
 exports.deleteUser = function (req, res) {
     let auth_user_id;
     let user_id = Number(req.params.id);
@@ -164,7 +160,6 @@ exports.deleteUser = function (req, res) {
     }
 };
 
-// done
 exports.userById = function (req, res) {
     let userId = Number(req.params.id);
 
@@ -196,7 +191,6 @@ exports.userById = function (req, res) {
     })
 };
 
-// done
 exports.logout = function (req, res) {
     AuthMiddleware.logout(req, function (done) {
         if (done === "ok") {

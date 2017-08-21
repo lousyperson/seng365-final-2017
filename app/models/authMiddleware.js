@@ -17,7 +17,6 @@ exports.checkAuth = function (req, done) {
     })
 };
 
-// done
 exports.logout = function (req, done) {
     let authToken = req.header('X-Authorization');
 

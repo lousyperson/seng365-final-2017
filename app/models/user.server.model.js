@@ -9,7 +9,6 @@ exports.getAll = function (done) {
     });
 };
 
-// done
 exports.getOne = function (userId, done) {
     db.get().query('SELECT user_id as id, username, location, email FROM cf_users WHERE user_id=?', userId, function (err, rows) {
         if (err) { console.log(err); return done("error") }
@@ -17,7 +16,6 @@ exports.getOne = function (userId, done) {
     });
 };
 
-// done
 exports.insertUser = function (user, password, done) {
     let id;
     let username;
@@ -53,7 +51,6 @@ exports.insertUser = function (user, password, done) {
     });
 };
 
-// done
 exports.login = function (user_details, done) {
     let username;
     let password;
@@ -90,7 +87,6 @@ exports.login = function (user_details, done) {
     });
 };
 
-// done
 exports.updateUser = function (update_data, done) {
     let id;
     let username;
@@ -126,7 +122,6 @@ exports.updateUser = function (update_data, done) {
     });
 };
 
-// done
 exports.deleteUser = function (user_id, done) {
     db.get().query('SELECT COUNT(*) AS count FROM cf_users WHERE user_id=?', user_id, function (err, check_user_result) {
         if (err) { console.log(err); return done("error"); }

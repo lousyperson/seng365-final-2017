@@ -1,6 +1,5 @@
 const db = require('../../config/db.js');
 
-// done
 exports.getAll = function (done) {
     db.get().query('SELECT project_id as id, title, subtitle, imageUri FROM cf_projects', function (err, rows) {
         if (err) { console.log(err); return done([]); }
@@ -8,7 +7,6 @@ exports.getAll = function (done) {
     });
 };
 
-// done
 exports.insertProject = function (user_data, done) {
     let title;
     let subtitle;
@@ -36,7 +34,6 @@ exports.insertProject = function (user_data, done) {
     });
 };
 
-// done
 exports.getOne = function (proj_id, done) {
     let project_id = proj_id;
     let project_rows;
@@ -120,7 +117,6 @@ exports.getOne = function (proj_id, done) {
     }
 };
 
-// done
 exports.getImg = function (project_id, done) {
     db.get().query('SELECT imageUri FROM cf_projects WHERE project_id=?', project_id, function (err, rows) {
         if (err) { console.log(err); return done("error"); }
@@ -130,7 +126,6 @@ exports.getImg = function (project_id, done) {
     });
 };
 
-// done
 exports.updateProject = function (project_id, project_status, id, done) {
     db.get().query('SELECT COUNT(*) AS count FROM cf_projects WHERE project_id=?', project_id, function (err, project_lookup_result) {
         if (err) { console.log(err); return done("error"); }
@@ -150,7 +145,6 @@ exports.updateProject = function (project_id, project_status, id, done) {
     })
 };
 
-// done
 exports.updateImg = function (project_id, image, id, done) {
     db.get().query('SELECT COUNT(*) AS count FROM cf_projects WHERE project_id=?', project_id, function (err, project_lookup_result) {
         if (err) { console.log(err); return done("error"); }
@@ -170,7 +164,6 @@ exports.updateImg = function (project_id, image, id, done) {
     });
 };
 
-// done
 exports.pledge = function (project_id, pledge_data, done) {
     let id;
     let amount;

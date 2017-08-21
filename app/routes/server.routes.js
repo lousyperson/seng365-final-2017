@@ -18,36 +18,35 @@ module.exports = function (app) {
         .get(testing);
 
     app.route(basePath + '/projects')
-        // .all(authenWare)
-        .get(projects.listProjects)  // done
-        .post(projects.createProject);  // done
+        .get(projects.listProjects)
+        .post(projects.createProject);
 
     app.route(basePath + '/projects/:id')
-        .get(projects.getOne)  // done
-        .put(projects.updateProject);  // done
+        .get(projects.getOne)
+        .put(projects.updateProject);
 
     app.route(basePath + '/projects/:id/image')
-        .get(projects.getImg)  // done
-        .put(projects.updateImg);  // done
+        .get(projects.getImg)
+        .put(projects.updateImg);
 
     app.route(basePath + '/projects/:id/pledge')
-        .post(projects.pledge);  // done
+        .post(projects.pledge);
 
     app.route(basePath + '/projects/:id/rewards')
-        .get(rewards.listRewards)  // done
-        .put(rewards.updateReward); // done
+        .get(rewards.listRewards)
+        .put(rewards.updateReward);
 
     app.route(basePath + '/users')
-        .post(users.createUser);  // done
+        .post(users.createUser);
 
     app.route(basePath + '/users/login')
-        .post(users.login);  // done
+        .post(users.login);
 
     app.route(basePath + '/users/logout')
-        .post(users.logout);  // done
+        .post(users.logout);
 
     app.route(basePath + '/users/:id')
-        .get(users.userById)  // done
-        .put(users.updateUser)  // done
-        .delete(users.deleteUser)  // done
+        .get(users.userById)
+        .put(users.updateUser)
+        .delete(users.deleteUser)
 };
