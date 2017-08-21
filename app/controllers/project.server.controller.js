@@ -131,9 +131,26 @@ exports.getImg = function (req, res) {
             res.status(404);
             res.end();
         } else {
+            const url = require("url");
+            let imageUri = url.parse(result);
+            if (imageUri.hostname === req.hostname) {
+                fs.readFile("." + imageUri.pathname, function(err, data) {
+                    if (err) {
+                        console.log(err);
+                        res.statusMessage = "Not found";
+                        res.status(404);
+                        res.end();
+                        return;
+                    }
+                    res.statusMessage = "OK";
+                    res.status(200);
+                    res.end(data, 'binary');
+                });
+                return;
+            }
             res.statusMessage = "OK";
             res.status(200);
-            res.end(result, 'binary');
+            res.end(result);
         }
     })
 };
@@ -144,11 +161,12 @@ exports.getImgFile = function (req, res) {
     fs.readFile('./uploads/' + imgName, function(err, data) {
         if (err) {
             console.log(err);
-            res.statusMessage = "Error";
+            res.statusMessage = "Not found";
             res.status(404);
             res.end();
             return;
         }
+        res.statusMessage = "OK";
         res.status(200);
         res.end(data, 'binary');
     })
@@ -262,7 +280,6 @@ exports.updateImg = function (req, res) {
                     }
 
                     let fullUrl = req.protocol + '://' + req.get('host') + '/uploads/' + filename;
-                    console.log(fullUrl);
                     Project.updateImg(project_id, fullUrl, auth_user_id, function (result) {
                         if (result === "ok") {
                             res.statusMessage = "OK";
