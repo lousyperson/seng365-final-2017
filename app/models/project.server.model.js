@@ -120,7 +120,7 @@ exports.getOne = function (proj_id, done) {
     }
 };
 
-// assume
+// done
 exports.getImg = function (project_id, done) {
     db.get().query('SELECT imageUri FROM cf_projects WHERE project_id=?', project_id, function (err, rows) {
         if (err) { console.log(err); return done("error"); }

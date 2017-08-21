@@ -115,7 +115,7 @@ exports.getOne = function (req, res) {
     });
 };
 
-// assume
+// done
 exports.getImg = function (req, res) {
     let project_id = Number(req.params.id);
 

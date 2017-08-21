@@ -27,7 +27,7 @@ module.exports = function (app) {
         .put(projects.update);  // assume
 
     app.route(basePath + '/projects/:id/image')
-        .get(projects.getImg)  // assume
+        .get(projects.getImg)  // done
         .put(projects.updateImg);  // assume
 
     app.route(basePath + '/projects/:id/pledge')
