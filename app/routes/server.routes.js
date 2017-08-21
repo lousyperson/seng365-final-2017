@@ -24,11 +24,11 @@ module.exports = function (app) {
 
     app.route(basePath + '/projects/:id')
         .get(projects.getOne)  // done
-        .put(projects.update);  // assume
+        .put(projects.updateProject);  // done
 
     app.route(basePath + '/projects/:id/image')
         .get(projects.getImg)  // done
-        .put(projects.updateImg);  // assume
+        .put(projects.updateImg);  // done
 
     app.route(basePath + '/projects/:id/pledge')
         .post(projects.pledge);  // done
