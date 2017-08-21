@@ -34,7 +34,7 @@ module.exports = function (app) {
         .post(projects.pledge);  // done-ish (auth)
 
     app.route(basePath + '/projects/:id/rewards')
-        .get(rewards.listRewards)  // done-ish
+        .get(rewards.listRewards)  // done
         .put(rewards.updateReward); // assume
 
     app.route(basePath + '/users')

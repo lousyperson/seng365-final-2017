@@ -135,10 +135,6 @@ exports.getImg = function (req, res) {
         } else {
             res.statusMessage = "OK";
             res.status(200);
-
-            let img = Image;
-            img.src = result;
-
             res.end(result, 'binary');
         }
     })

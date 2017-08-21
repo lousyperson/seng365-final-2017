@@ -26,11 +26,12 @@ exports.insert = function (user_data, done) {
     done()
 };
 
-// done-ish
+// done
 exports.getAll = function (project_id, done) {
     db.get().query('SELECT rewards_id as id, amount, description FROM cf_rewards WHERE project_id=?', [project_id], function (err, result) {
-        if (err) { console.log(err); return done(err); }
-        return done(result);
+        if (err) { console.log(err); return done("error"); }
+        if (result.length < 1) return done("error");
+        else return done(result);
     });
 };
 
