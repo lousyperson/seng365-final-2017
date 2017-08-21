@@ -138,6 +138,22 @@ exports.getImg = function (req, res) {
     })
 };
 
+exports.getImgFile = function (req, res) {
+    let imgName = req.params.id;
+
+    fs.readFile('./uploads/' + imgName, function(err, data) {
+        if (err) {
+            console.log(err);
+            res.statusMessage = "Error";
+            res.status(404);
+            res.end();
+            return;
+        }
+        res.status(200);
+        res.end(data, 'binary');
+    })
+};
+
 exports.updateProject = function (req, res) {
     let auth_user_id;
     AuthMiddleware.checkAuth(req, function (done) {
@@ -244,7 +260,10 @@ exports.updateImg = function (req, res) {
                         res.end();
                         return;
                     }
-                    Project.updateImg(project_id, buffer, auth_user_id, function (result) {
+
+                    let fullUrl = req.protocol + '://' + req.get('host') + '/uploads/' + filename;
+                    console.log(fullUrl);
+                    Project.updateImg(project_id, fullUrl, auth_user_id, function (result) {
                         if (result === "ok") {
                             res.statusMessage = "OK";
                             res.status(200);
@@ -267,14 +286,6 @@ exports.updateImg = function (req, res) {
             }
         });
     }
-};
-
-exports.delete = function (req, res) {
-    return null;
-};
-
-exports.userById = function (req, res) {
-    return null;
 };
 
 exports.pledge = function (req, res) {

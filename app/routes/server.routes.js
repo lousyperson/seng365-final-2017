@@ -48,5 +48,8 @@ module.exports = function (app) {
     app.route(basePath + '/users/:id')
         .get(users.userById)
         .put(users.updateUser)
-        .delete(users.deleteUser)
+        .delete(users.deleteUser);
+
+    app.route('/uploads/:id')
+        .get(projects.getImgFile)
 };

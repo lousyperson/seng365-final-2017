@@ -58,7 +58,7 @@ function create_projects_table() {
         "title          varchar(30)     not null                        ," +
         "subtitle       varchar(30)                                     ," +
         "description    varchar(100)                                    ," +
-        "imageUri       blob                                            ," +
+        "imageUri       LONGTEXT                                        ," +
         "target         int             default 0                       ," +
         // "creators       int                                             ," +
         // "rewards        int                                             ," +
