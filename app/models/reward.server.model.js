@@ -28,7 +28,7 @@ exports.insert = function (user_data, done) {
 
 // done
 exports.getAll = function (project_id, done) {
-    db.get().query('SELECT rewards_id as id, amount, description FROM cf_rewards WHERE project_id=?', [project_id], function (err, result) {
+    db.get().query('SELECT reward_id as id, amount, description FROM cf_rewards WHERE project_id=?', [project_id], function (err, result) {
         if (err) { console.log(err); return done("error"); }
         if (result.length < 1) return done("error");
         else return done(result);
@@ -36,12 +36,10 @@ exports.getAll = function (project_id, done) {
 };
 
 // assume
-exports.updateReward = function (update_data, auth_user_id, done) {
-    let project_id;
+exports.updateReward = function (update_data, auth_user_id, project_id, done) {
     let amount;
     let description;
     try {
-        project_id = update_data['project_id'];
         amount = update_data['amount'];
         description = update_data['description'].toString();
     } catch (err) {

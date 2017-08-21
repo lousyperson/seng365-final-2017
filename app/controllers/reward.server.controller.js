@@ -44,13 +44,21 @@ exports.updateReward = function (req, res) {
     });
 
     function update_reward() {
+        let project_id = Number(req.params.id);
+
+        if (!(project_id >= 0)) {
+            res.statusMessage = "Malformed request";
+            res.status(400);
+            res.end();
+            return;
+        }
+
         let update_data = {
-            "project_id": req.params.id,
             "amount": req.body[0].amount,
             "description": req.body[0].description
         };
 
-        Reward.updateReward(update_data, auth_user_id, function (result) {
+        Reward.updateReward(update_data, auth_user_id, project_id, function (result) {
             if (result === "ok") {
                 res.statusMessage = "OK";
                 res.status(201);

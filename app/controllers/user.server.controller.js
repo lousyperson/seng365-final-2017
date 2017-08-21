@@ -65,6 +65,14 @@ exports.read = function (req, res) {
 // done
 exports.updateUser = function (req, res) {
     let auth_user_id;
+    let user_id = Number(req.params.id);
+
+    if (!(user_id >= 0)) {
+        res.statusMessage = "Malformed request";
+        res.status(400);
+        res.end();
+        return;
+    }
 
     AuthMiddleware.checkAuth(req, function (done) {
         if (done === "not log in" || done === "no account") {
@@ -73,7 +81,7 @@ exports.updateUser = function (req, res) {
             res.end();
         } else {
             auth_user_id = Number(done);
-            if (auth_user_id !== Number(req.params.id)) {
+            if (auth_user_id !== user_id) {
                 res.statusMessage = "Forbidden - account not owned";
                 res.status(403);
                 res.end();
@@ -115,6 +123,14 @@ exports.updateUser = function (req, res) {
 // done
 exports.deleteUser = function (req, res) {
     let auth_user_id;
+    let user_id = Number(req.params.id);
+
+    if (!(user_id >= 0)) {
+        res.statusMessage = "User not found";
+        res.status(404);
+        res.end();
+        return;
+    }
 
     AuthMiddleware.checkAuth(req, function (result) {
         if (result === "not log in" || result === "no account") {
@@ -123,7 +139,7 @@ exports.deleteUser = function (req, res) {
             res.end();
         } else {
             auth_user_id = Number(result);
-            if (auth_user_id !== Number(req.params.id)) {
+            if (auth_user_id !== user_id) {
                 res.statusMessage = "Forbidden - account not owned";
                 res.status(403);
                 res.end();

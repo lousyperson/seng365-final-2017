@@ -119,7 +119,6 @@ exports.getOne = function (req, res) {
 exports.getImg = function (req, res) {
     let project_id = Number(req.params.id);
 
-
     if (!(project_id >= 0)) {
         res.statusMessage = "Malformed request";
         res.status(400);
@@ -152,10 +151,10 @@ exports.update = function (req, res) {
     //     res.end();
     // }
 
-    let project_id = req.params.id;
+    let project_id = Number(req.params.id);
     let project_status = req.body.open.toLowerCase();
 
-    if (project_status !== "true" || project_status !== "false") {
+    if (project_status !== "true" || project_status !== "false" || !(project_id >= 0)) {
         res.statusMessage = "Malformed request";
         res.status(400);
         res.end();
@@ -187,8 +186,15 @@ exports.updateImg = function (req, res) {
     //     res.end();
     // }
 
-    let project_id = req.params.id;
+    let project_id = Number(req.params.id);
     let image = req.body.image;
+
+    if (!(project_id >= 0)) {
+        res.statusMessage = "Malformed request";
+        res.status(400);
+        res.end();
+        return;
+    }
 
     Project.updateImg(project_id, image, function (result) {
         if (result.affectedRows === 1) {
@@ -214,6 +220,14 @@ exports.userById = function (req, res) {
 // done-ish (auth)
 exports.pledge = function (req, res) {
     let auth_user_id;
+    let project_id = Number(req.params.id);
+
+    if (!(project_id >= 0)) {
+        res.statusMessage = "Not found";
+        res.status(404);
+        res.end();
+        return;
+    }
 
     AuthMiddleware.checkAuth(req, function (done) {
         if (done === "not log in" || done === "no account") {
@@ -227,7 +241,6 @@ exports.pledge = function (req, res) {
     });
 
     function pledge_function() {
-        let project_id = req.params.id;
         let pledge_data = {
             "id": auth_user_id,
             "amount": req.body.amount,
