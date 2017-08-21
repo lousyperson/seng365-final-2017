@@ -3,8 +3,6 @@ const Reward = require('../models/reward.server.model');
 const Creator = require('../models/creator.server.model');
 const AuthMiddleware = require('../models/authMiddleware');
 
-const Canvas = require('canvas');
-
 // done
 exports.listProjects = function (req, res) {
     Project.getAll(function (result) {
@@ -138,7 +136,7 @@ exports.getImg = function (req, res) {
             res.statusMessage = "OK";
             res.status(200);
 
-            let img = new require('canvas').Image;
+            let img = Image;
             img.src = result;
 
             res.end(result, 'binary');

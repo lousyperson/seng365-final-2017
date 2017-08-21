@@ -2,8 +2,17 @@ const Reward = require('../models/reward.server.model');
 const AuthMiddleware = require('../models/authMiddleware');
 
 // done-ish
-exports.list = function (req, res) {
-    let project_id = req.params.id;
+exports.listRewards = function (req, res) {
+    let project_id = Number(req.params.id);
+
+    if (!(project_id >= 0)) {
+        res.statusMessage = "Not found";
+        res.status(404);
+        res.json([]);
+        res.end();
+        return;
+    }
+
     Reward.getAll(project_id, function (result) {
         if (result) {
             res.statusMessage = "OK";
