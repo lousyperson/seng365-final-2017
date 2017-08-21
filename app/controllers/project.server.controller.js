@@ -217,7 +217,7 @@ exports.userById = function (req, res) {
     return null;
 };
 
-// done-ish (auth)
+// done
 exports.pledge = function (req, res) {
     let auth_user_id;
     let project_id = Number(req.params.id);
@@ -250,7 +250,7 @@ exports.pledge = function (req, res) {
             }
         };
 
-        if (typeof pledge_data['anonymous'] !== "boolean") {
+        if (typeof pledge_data['anonymous'] !== "boolean" || !(Number(pledge_data["amount"]) >= 0)) {
             res.statusMessage = "bad user, project, or pledge details";
             res.status(400);
             res.end();
@@ -266,13 +266,17 @@ exports.pledge = function (req, res) {
                 res.statusMessage = "Forbidden - cannot pledge to own project - this is fraud!";
                 res.status(403);
                 res.end();
-            } else if ("project not found"){
+            } else if (result === "project not found"){
                 res.statusMessage = "Not found";
                 res.status(404);
                 res.end();
-            } else {
+            } else if (result === "ok") {
                 res.statusMessage = "OK";
                 res.status(200);
+                res.end();
+            } else {
+                res.statusMessage = "Bad user, project, or pledge details";
+                res.status(400);
                 res.end();
             }
         })

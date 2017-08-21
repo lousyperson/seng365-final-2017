@@ -3,7 +3,7 @@ const db = require('../../config/db.js');
 // done
 exports.getAll = function (done) {
     db.get().query('SELECT project_id as id, title, subtitle, imageUri FROM cf_projects', function (err, rows) {
-        if (err) return done({"ERROR": "Error selecting"});
+        if (err) { console.log(err); return done([]); }
         return done(rows);
     });
 };
@@ -130,18 +130,10 @@ exports.getImg = function (project_id, done) {
     });
 };
 
-exports.alter = function () {
-    return null;
-};
-
-exports.remove = function () {
-    return null;
-};
-
 // assume
 exports.updateProject = function (project_id, project_status, done) {
   db.get().query('UPDATE cf_projects SET open_project=? WHERE project_id=?', [project_status, project_id], function (err, rows) {
-      if (err) return done({"error": "error"});
+      if (err) { console.log(err); return done("error"); }
       done(rows);  // NOT IN SPEC
   })
 };
@@ -149,37 +141,46 @@ exports.updateProject = function (project_id, project_status, done) {
 // assume
 exports.updateImg = function (project_id, image, done) {
     db.get().query('UPDATE cf_projects SET imageUri=? WHERE project_id=?', [image, project_id], function (err, rows) {
-        if (err) return done({"error": "error"});
+        if (err) { console.log(err); return done("error"); }
         done(rows);  // NOT IN SPEC
     })
 };
 
-// done-ish (auth)
+// done
 exports.pledge = function (project_id, pledge_data, done) {
-    let id = pledge_data['id'];
-    let amount = pledge_data['amount'];
-    let anonymous = pledge_data['anonymous'];
-    let authToken = pledge_data['card']['authToken'];
+    let id;
+    let amount;
+    let anonymous;
+    let authToken;
+    try {
+        id = pledge_data['id'];
+        amount = pledge_data['amount'];
+        anonymous = pledge_data['anonymous'];
+        authToken = pledge_data['card']['authToken'].toString();
+    } catch (err) {
+        if (err instanceof TypeError) return done("error");
+    }
 
-    db.get().query('SELECT project_id FROM cf_projects WHERE project_id=?', project_id, function (err, project_lookup_result) {
-        if (err) return done("error");
-        if (project_lookup_result.length < 1) {
+    db.get().query('SELECT COUNT(*) AS count FROM cf_projects WHERE project_id=?', project_id, function (err, project_lookup_result) {
+        if (err) { console.log(err); return done("error"); }
+        if (project_lookup_result[0].count === 0) {
             return done("project not found");
         } else {
             let creators_id = [];
             db.get().query('SELECT user_id FROM cf_creators WHERE project_id=?', project_id, function (err, get_creators_id_result) {
-                if (err) return done("error");
+                if (err) { console.log(err); return done("error"); }
                 for (let creator_id of get_creators_id_result) {
                     creators_id.push(creator_id['user_id'])
                 }
-                if (id in creators_id) {
+
+                if (creators_id.indexOf(id) >= 0) {
                     return done("is creator");
                 }
 
                 let values = [id, amount, anonymous, authToken, project_id];
                 db.get().query('INSERT INTO cf_backers (user_id, amount, anonymous, authToken, project_id) VALUES (?, ?, ?, ?, ?)', values, function (err, rows) {
-                    if (err) return done("error");
-                    done("ok");  // NOT IN SPEC
+                    if (err) { console.log(err); return done("error"); }
+                    done("ok");
                 })
             });
         }
