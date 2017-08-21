@@ -3,6 +3,9 @@ const Reward = require('../models/reward.server.model');
 const Creator = require('../models/creator.server.model');
 const AuthMiddleware = require('../models/authMiddleware');
 
+const fs = require('fs');
+const multer = require('multer');
+
 // done
 exports.listProjects = function (req, res) {
     Project.getAll(function (result) {
@@ -176,6 +179,7 @@ exports.update = function (req, res) {
 
 // assume
 exports.updateImg = function (req, res) {
+    let auth_user_id;
     // if (NOT LOGIN) {
     //     res.statusMessage = "Unauthorized - create account to update project";
     //     res.status(401);
@@ -185,28 +189,99 @@ exports.updateImg = function (req, res) {
     //     res.status(403);
     //     res.end();
     // }
+    // AuthMiddleware.checkAuth(req, function (done) {
+    //     if (done === "not log in" || done === "no account") {
+    //         res.statusMessage = "Unauthorized - create account to update project";
+    //         res.status(401);
+    //         res.end();
+    //         return;
+    //     }
+    //     auth_user_id = Number(done);
+    //     update_image();
+    // });
+    update_image();
 
-    let project_id = Number(req.params.id);
-    let image = req.body.image;
+    function update_image() {
+        let path = require('path');
 
-    if (!(project_id >= 0)) {
-        res.statusMessage = "Malformed request";
-        res.status(400);
-        res.end();
-        return;
+        let storage = multer.diskStorage({
+            destination: function(req, file, callback) {
+                callback(null, './uploads')
+            },
+            filename: function(req, file, callback) {
+                callback(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname))
+            }
+        });
+
+        let upload = multer({
+            storage: storage,
+            fileFilter: function(req, file, callback) {
+                let ext = path.extname(file.originalname);
+                if (ext !== '.png' && ext !== '.jpg' && ext !== '.jpeg') {
+                    return callback(res.end('Only images are allowed'), null)
+                }
+                callback(null, true)
+            }
+        }).single('avatar');
+
+        upload(req, res, function (err) {
+            if (err) {
+                console.log(err);
+                res.statusMessage = "Malformed request";
+                res.status(400);
+                res.end();
+            } else {
+                let project_id = Number(req.params.id);
+                let base64Data = req.file;
+                res.end(base64Data, 'binary')
+
+                // let base64Data = req.file;
+                // console.log(base64Data);
+                // res.end(base64Data, 'binary');
+                //
+                // fs.writeFile(__dirname + "/upload/out.png", base64Data, 'base64', function(err) {
+                //     if (err) console.log(err);
+                //     fs.readFile(__dirname + "/upload/out.png", function(err, data) {
+                //         if (err) throw err;
+                //         res.end(data, 'binary');
+                //     });
+                // });
+            }
+        })
+
+
+        // fs.writeFile(__dirname + "/upload/out.png", base64Data, 'base64', function(err) {
+        //     if (err) console.log(err);
+        //     fs.readFile(__dirname + "/upload/out.png", function(err, data) {
+        //         if (err) throw err;
+        //         console.log('reading file...', data.toString('base64'));
+        //         res.send(data);
+        //     });
+        // });
+
+        // let image = require('fs').readFile(req.body, 'base64', function (err, data) {
+        //
+        // });
+
+        // if (!(project_id >= 0)) {
+        //     res.statusMessage = "Malformed request";
+        //     res.status(400);
+        //     res.end();
+        //     return;
+        // }
+        //
+        // Project.updateImg(project_id, image, function (result) {
+        //     if (result.affectedRows === 1) {
+        //         res.statusMessage = "OK";
+        //         res.status(200);
+        //         res.end();
+        //     } else {
+        //         res.statusMessage = "Malformed request";
+        //         res.status(400);
+        //         res.end();
+        //     }
+        // })
     }
-
-    Project.updateImg(project_id, image, function (result) {
-        if (result.affectedRows === 1) {
-            res.statusMessage = "OK";
-            res.status(200);
-            res.end();
-        } else {
-            res.statusMessage = "Malformed request";
-            res.status(400);
-            res.end();
-        }
-    })
 };
 
 exports.delete = function (req, res) {
