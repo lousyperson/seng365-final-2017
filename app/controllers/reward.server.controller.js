@@ -28,9 +28,17 @@ exports.listRewards = function (req, res) {
     })
 };
 
-// assume
+// done
 exports.updateReward = function (req, res) {
     let auth_user_id;
+    let project_id = Number(req.params.id);
+
+    if (!(project_id >= 0)) {
+        res.statusMessage = "Not found";
+        res.status(404);
+        res.end();
+        return;
+    }
 
     AuthMiddleware.checkAuth(req, function (done) {
         if (done === "not log in" || done === "no account") {
@@ -44,19 +52,13 @@ exports.updateReward = function (req, res) {
     });
 
     function update_reward() {
-        let project_id = Number(req.params.id);
-
-        if (!(project_id >= 0)) {
-            res.statusMessage = "Malformed request";
-            res.status(400);
-            res.end();
-            return;
+        let update_data = [];
+        for (let key in req.body) {
+            if (req.body.hasOwnProperty(key)) {
+                let item = req.body[key];
+                update_data.push(item);
+            }
         }
-
-        let update_data = {
-            "amount": req.body[0].amount,
-            "description": req.body[0].description
-        };
 
         Reward.updateReward(update_data, auth_user_id, project_id, function (result) {
             if (result === "ok") {

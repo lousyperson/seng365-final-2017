@@ -56,7 +56,7 @@ exports.getOne = function (proj_id, done) {
         }
     });
 
-    db.get().query('SELECT user_id as id, name FROM cf_creators WHERE project_id=?', project_id, function (err, rows) {
+    db.get().query('SELECT user_id as id, name FROM cf_creators WHERE project_id=? ORDER BY user_id', project_id, function (err, rows) {
         if (!already_return) {
             if (err) { console.log(err); already_return=true; return done("error"); }
             if (rows.length < 1) { already_return=true; return done("error"); }
@@ -65,7 +65,7 @@ exports.getOne = function (proj_id, done) {
         }
     });
 
-    db.get().query('SELECT reward_id as id, amount, description FROM cf_rewards WHERE project_id=?', project_id, function (err, rows) {
+    db.get().query('SELECT reward_id as id, amount, description FROM cf_rewards WHERE project_id=? ORDER BY reward_id', project_id, function (err, rows) {
         if (!already_return) {
             if (err) { console.log(err); already_return=true; return done("error"); }
             rewards_row = rows;

@@ -35,7 +35,7 @@ module.exports = function (app) {
 
     app.route(basePath + '/projects/:id/rewards')
         .get(rewards.listRewards)  // done
-        .put(rewards.updateReward); // assume
+        .put(rewards.updateReward); // done
 
     app.route(basePath + '/users')
         .post(users.createUser);  // done
