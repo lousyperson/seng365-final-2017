@@ -8,18 +8,22 @@
 
         <div v-if="$route.params.projectId">
             <div id="project">
-                <router-link to="{ title: 'projects' }">Back to Projects</router-link>
+                <router-link :to="{ name: 'projects' }">Back to Projects</router-link>
 
                 <br /><br />
 
                 <table>
                     <tr>
-                        <td>User ID</td>
-                        <td>Username</td>
+                        <td>Project ID</td>
+                        <td>Title</td>
+                        <td>Subtitle</td>
+                        <td>Image</td>
                     </tr>
                     <tr>
                         <td>{{ $route.params.projectId }}</td>
-                        <td>{{ getSingleProject($route.params.projectId).data.title }}</td>
+                        <td>{{ getSingleProject($route.params.projectId).title }}</td>
+                        <td>{{ getSingleProject($route.params.projectId).subtitle }}</td>
+                        <td><img :src="getImage($route.params.projectId)" height="50%" width="50%" /></td>
                     </tr>
                 </table>
             </div>
@@ -29,8 +33,8 @@
             <div id="projects">
                 <table>
                     <tr v-for="project in projects">
-                        <td>{{ project.data.title }}</td>
-                        <td><router-link to="{ title: 'project', params: { projectId: project.id }}">View</router-link></td>
+                        <td>{{ project.title }}</td>
+                        <td><router-link :to="{ name: 'project', params: { projectId: project.id }}">View</router-link></td>
                     </tr>
                 </table>
             </div>
@@ -44,7 +48,8 @@
             return {
                 error: "",
                 errorFlag: false,
-                projects: []
+                projects: [],
+                projectId: 0
             }
         },
         mounted: function () {
@@ -67,6 +72,10 @@
                         return this.projects[i];
                     }
                 }
+            },
+
+            getImage: function (id) {
+                return 'http://localhost:4941/api/v2/projects/' + id + '/image'
             }
         }
     }
