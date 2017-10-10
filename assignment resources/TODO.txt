@@ -11,5 +11,31 @@
 - backer name + pledge amount for 5 most recent must be shown
 - anonymous group together
 
-## Story 3
--
+## Story 3 - User
+- unauthenticated person can register given username, email, password, location (optional)
+- password not in clear text
+- password valid as long not empty string
+- unique email and valid format
+- logged in as soon as registered
+
+## Story 4 - Login/Logout
+- login using username + password
+- logged in person can log out. remove authentication
+- only one person logged in at a time
+
+## Story 5 - Pledge
+- pledge only on 'open' project
+- project total increase by pledge amount
+- username shown as backer if not anonymous + amount
+- combine display amount for anonymous backer
+- number of backers must be counted for unique backers and +1 anonymous
+
+## Story 6 - Create/Edit Project
+- title, subtitle, creators, creation date, description, rewards, funding target, image (optional)
+- new project is mark 'Open' and only 'Open' project can receive pledge
+- 'Open' project can close
+- 'Closed' project cannot be opened
+
+## Story 7 - Backer Viewing Projects
+- backer can view all backing projects
+- creator can view all projects which is creator
