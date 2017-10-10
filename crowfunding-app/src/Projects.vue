@@ -32,7 +32,8 @@
         <div v-else>
             <div id="projects">
                 <table>
-                    <tr v-for="project in projects">
+                    <!--TODO Check closed projects-->
+                    <tr v-for="project in projects" v-if="project.open === true">
                         <td>{{ project.title }}</td>
                         <td><router-link :to="{ name: 'project', params: { projectId: project.id }}">View</router-link></td>
                     </tr>

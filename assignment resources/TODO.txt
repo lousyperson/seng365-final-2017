@@ -1,0 +1,10 @@
+## Story 1
+- show image in the projects list
+- check if the project is open (as long as it's not closed)
+- manage number of projects displayed if too many is in the database
+- can filter title/subtitle
+
+## Story 2
+- display title, subtitle, creators, creation date, description, rewards, funding target
+- image (will be png or jpg, size is correct resolution)
+- progress towards funding goal, number of current backers, total amount pledge
