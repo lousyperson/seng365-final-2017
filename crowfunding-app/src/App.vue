@@ -222,4 +222,19 @@
         box-shadow: 0 0px 2px 1px rgba(0, 0, 0, 0.15);
         width: 150px;
     }
+
+    table, th, td {
+        border: 1px solid black;
+    }
+
+    th, td {
+        padding: 15px;
+        text-align: left;
+    }
+
+    thead {
+        font-weight: bold;
+        background-color: #3fa338;
+        color: #FFFFFF;
+    }
 </style>

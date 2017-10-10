@@ -1,52 +1,43 @@
 <template>
     <div>
+        <div class="lightbox-target" id="projImg">
+            <img :src="getImage(projectId)"/>
+            <a class="lightbox-close" v-on:click="scrollTo(projectId)"></a>
+        </div>
+
+        <h1>{{ pageTitle }}</h1>
+        <input type="text" id="filterInput" v-on:keyup="filterFunction" placeholder="Filter project..." />
+
         <div v-if="errorFlag" style="color: red;">
             {{ error }}
         </div>
 
-        <div v-if="$route.params.projectId">
-            <h1>{{ getSingleProject($route.params.projectId).title }}</h1>
-            <img :src="getImage($route.params.projectId)" height="300" />
-
-            <div id="project">
-                <router-link :to="{ name: 'projects' }">Back to Projects</router-link>
-
-                <br /><br />
-
-                <table>
-                    <thead>
-                        <tr>
-                            <td>Project ID</td>
-                            <td>Subtitle</td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>{{ $route.params.projectId }}</td>
-                            <td>{{ getSingleProject($route.params.projectId).subtitle }}</td>
-                            <td></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div v-else>
-            <h1>{{ pageTitle }}</h1>
-            <input type="text" id="filterInput" v-on:keyup="filterFunction" placeholder="Filter project..." />
-
-            <div id="projects">
-                <table>
-                    <!--TODO Check closed projects-->
-                    <template v-for="project in projects">
-                        <tr v-if="project.open === true" class="projectsRow" :title="getProjectTitle(project.title)">
-                            <td>{{ project.title }}</td>
-                            <td><router-link :to="{ name: 'project', params: { projectId: project.id }}">View</router-link></td>
-                            <td><img :src="getImage(project.id)" height="100" /></td>
-                        </tr>
-                    </template>
-                </table>
-            </div>
+        <div id="projects">
+            <table>
+                <!--TODO Check closed projects-->
+                <thead>
+                    <tr>
+                        <td>Project ID</td>
+                        <td>Project Title</td>
+                        <td>Project Subtitle</td>
+                        <td>Link</td>
+                        <td>Project Image</td>
+                    </tr>
+                </thead>
+                <tbody v-for="project in projects">
+                    <tr v-if="project.open === true" class="projectsRow" :title="getProjectTitle(project.title + ' ' + project.subtitle)">
+                        <td :id="project.id">{{ project.id }}</td>
+                        <td>{{ project.title }}</td>
+                        <td>{{ project.subtitle }}</td>
+                        <td><router-link :to="{ name: 'project', params: { projectId: project.id }}">View</router-link></td>
+                        <td>
+                            <a class="lightbox" href="#projImg">
+                                <img :src="getImage(project.id)" height="100" v-on:click="projectId = project.id"/>
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 </template>
@@ -63,6 +54,9 @@
             }
         },
         mounted: function () {
+
+        },
+        created() {
             this.getProjects();
         },
         methods: {
@@ -74,14 +68,6 @@
                         this.error = error;
                         this.errorFlag = true;
                     })
-            },
-
-            getSingleProject: function (id) {
-                for (let i = 0; i <= this.projects.length; i++) {
-                    if (this.projects[i].id == id) {
-                        return this.projects[i];
-                    }
-                }
             },
 
             getImage: function (id) {
@@ -105,7 +91,129 @@
                         value.style.display = "";
                     }
                 })
+            },
+            
+            scrollTo: function (hash) {
+                location.hash = "#" + hash;
+                window.scrollBy(0, -200);
             }
         }
     }
 </script>
+
+<style>
+    /* Styles the thumbnail */
+
+    a.lightbox img {
+        height: 150px;
+        border: 3px solid white;
+        box-shadow: 0px 0px 8px rgba(0,0,0,.3);
+        margin: 94px 20px 20px 20px;
+    }
+
+    /* Styles the lightbox, removes it from sight and adds the fade-in transition */
+
+    .lightbox-target {
+        position: fixed;
+        top: -100%;
+        width: 100%;
+        background: rgba(0,0,0,.7);
+        width: 100%;
+        opacity: 0;
+        -webkit-transition: opacity .5s ease-in-out;
+        -moz-transition: opacity .5s ease-in-out;
+        -o-transition: opacity .5s ease-in-out;
+        transition: opacity .5s ease-in-out;
+        overflow: hidden;
+    }
+
+    /* Styles the lightbox image, centers it vertically and horizontally, adds the zoom-in transition and makes it responsive using a combination of margin and absolute positioning */
+
+    .lightbox-target img {
+        margin: auto;
+        position: absolute;
+        top: 0;
+        left:0;
+        right:0;
+        bottom: 0;
+        max-height: 0%;
+        max-width: 0%;
+        border: 3px solid white;
+        box-shadow: 0px 0px 8px rgba(0,0,0,.3);
+        box-sizing: border-box;
+        -webkit-transition: .5s ease-in-out;
+        -moz-transition: .5s ease-in-out;
+        -o-transition: .5s ease-in-out;
+        transition: .5s ease-in-out;
+    }
+
+    /* Styles the close link, adds the slide down transition */
+
+    a.lightbox-close {
+        display: block;
+        width:50px;
+        height:50px;
+        box-sizing: border-box;
+        background: white;
+        color: black;
+        text-decoration: none;
+        position: absolute;
+        top: -80px;
+        right: 0;
+        -webkit-transition: .5s ease-in-out;
+        -moz-transition: .5s ease-in-out;
+        -o-transition: .5s ease-in-out;
+        transition: .5s ease-in-out;
+    }
+
+    /* Provides part of the "X" to eliminate an image from the close link */
+
+    a.lightbox-close:before {
+        content: "";
+        display: block;
+        height: 30px;
+        width: 1px;
+        background: black;
+        position: absolute;
+        left: 26px;
+        top:10px;
+        -webkit-transform:rotate(45deg);
+        -moz-transform:rotate(45deg);
+        -o-transform:rotate(45deg);
+        transform:rotate(45deg);
+    }
+
+    /* Provides part of the "X" to eliminate an image from the close link */
+
+    a.lightbox-close:after {
+        content: "";
+        display: block;
+        height: 30px;
+        width: 1px;
+        background: black;
+        position: absolute;
+        left: 26px;
+        top:10px;
+        -webkit-transform:rotate(-45deg);
+        -moz-transform:rotate(-45deg);
+        -o-transform:rotate(-45deg);
+        transform:rotate(-45deg);
+    }
+
+    /* Uses the :target pseudo-class to perform the animations upon clicking the .lightbox-target anchor */
+
+    .lightbox-target:target {
+        opacity: 1;
+        top: 0;
+        bottom: 0;
+    }
+
+    .lightbox-target:target img {
+        max-height: 100%;
+        max-width: 100%;
+    }
+
+    .lightbox-target:target a.lightbox-close {
+        top: 0px;
+    }
+</style>

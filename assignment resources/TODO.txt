@@ -3,13 +3,16 @@
 - check if the project is open (as long as it's not closed)
 - manage number of projects displayed if too many is in the database
 / can filter title/subtitle
+? closing image when page is bottom will bring user to -200px top
 
 ## Story 2 - Individual Project
-- display title, subtitle, creators, creation date, description, rewards, funding target
-- image (will be png or jpg, size is correct resolution)
+/ display title, subtitle, creators, creation date, description, rewards, funding target
+/ image (will be png or jpg, size is correct resolution)
 - progress towards funding goal, number of current backers, total amount pledge
 - backer name + pledge amount for 5 most recent must be shown
 - anonymous group together
+? currentPledge undefined
+? table with <br /> tag has little line at the bottom
 
 ## Story 3 - User
 - unauthenticated person can register given username, email, password, location (optional)
