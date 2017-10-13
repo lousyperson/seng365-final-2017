@@ -20,16 +20,14 @@
                         <td>Project ID</td>
                         <td>Project Title</td>
                         <td>Project Subtitle</td>
-                        <td>Link</td>
                         <td>Project Image</td>
                     </tr>
                 </thead>
                 <tbody v-for="project in projects">
                     <tr v-if="project.open === true" class="projectsRow" :title="getProjectTitle(project.title + ' ' + project.subtitle)">
                         <td :id="project.id">{{ project.id }}</td>
-                        <td>{{ project.title }}</td>
+                        <td><router-link :to="{ name: 'project', params: { projectId: project.id }}">{{ project.title }}</router-link></td>
                         <td>{{ project.subtitle }}</td>
-                        <td><router-link :to="{ name: 'project', params: { projectId: project.id }}">View</router-link></td>
                         <td>
                             <a class="lightbox" href="#projImg">
                                 <img :src="getImage(project.id)" height="100" v-on:click="projectId = project.id"/>
@@ -71,7 +69,10 @@
             },
 
             getImage: function (id) {
-                return 'http://localhost:4941/api/v2/projects/' + id + '/image'
+                if (id > 0) {
+                    return 'http://localhost:4941/api/v2/projects/' + id + '/image'
+                }
+                return null;
             },
 
             getProjectTitle: function (title) {
@@ -94,8 +95,9 @@
             },
             
             scrollTo: function (hash) {
+                let y = window.scrollY;
                 location.hash = "#" + hash;
-                window.scrollBy(0, -200);
+                window.scrollTo(0, y);
             }
         }
     }

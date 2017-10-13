@@ -3,7 +3,8 @@
 - check if the project is open (as long as it's not closed)
 - manage number of projects displayed if too many is in the database
 / can filter title/subtitle
-? closing image when page is bottom will bring user to -200px top
+? row has title and subtitle shown when hover
+? GET http://localhost:4941/api/v2/projects/0/image 404 (Not Found)
 
 ## Story 2 - Individual Project
 / display title, subtitle, creators, creation date, description, rewards, funding target

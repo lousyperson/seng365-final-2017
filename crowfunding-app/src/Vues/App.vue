@@ -1,11 +1,45 @@
 <template>
     <div id="app">
-        <div class="topNav" id="myTopNav">
-            <ul class="topNavList">
-                <li><a href="/">Home</a></li>
-                <li class="last"><a href="/projects">Projects</a></li>
-            </ul>
-        </div>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light" style="background-color: #e3f2fd;">
+            <a class="navbar-brand" href="/">
+                <!--<img src="../assets/cflogonew.png" height="50" class="d-inline-block align-top" alt="">-->
+                Crowdfunding
+            </a>
+            <!--<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">-->
+                <!--<span class="navbar-toggler-icon"></span>-->
+            <!--</button>-->
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/projects">Projects</a>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav ml-auto" v-if="!session">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/login">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/signup">Sign up</a>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav ml-auto" v-else>
+                    <li class="nav-item">
+                        <a class="nav-link" v-on:click="logout">Sign out</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!--<div class="topNav" id="myTopNav">-->
+            <!--<ul class="topNavList">-->
+                <!--<li><a href="/">Home</a></li>-->
+                <!--<li class="last"><a href="/projects">Projects</a></li>-->
+            <!--</ul>-->
+        <!--</div>-->
 
         <br/><br/>
         <router-view></router-view>
@@ -17,16 +51,31 @@
         name: 'app',
         data() {
             return {
-                msg: 'Welcome to Your Vue.js App'
+                msg: 'Welcome to Your Vue.js App',
+                session: null
+            }
+        },
+        created() {
+           this.session = this.$session ? this.$session.exists() : null;
+        },
+        methods: {
+            logout: function () {
+                if (this.$session) {
+                    this.$session.destroy();
+                    this.session = null;
+                }
+                this.$router.go(0);
             }
         }
     }
 
     window.onload = function() {
+        console.log("yay")
         onLoad();
     };
 
     function onLoad() {
+
         let path = window.location.href;
         let topNavNodes = document.querySelectorAll(".topNavList");
         topNavNodes.item(0).childNodes.forEach((value, index, listObj) => {
