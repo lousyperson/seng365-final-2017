@@ -3,7 +3,6 @@ import App from './Vues/App.vue';
 import Home from './Vues/Home.vue';
 import Project from './Vues/Project.vue';
 import Projects from './Vues/Projects.vue';
-import Login from './Vues/Login.vue';
 import Signup from './Vues/Signup.vue'
 
 import VueRouter from 'vue-router';
@@ -15,7 +14,11 @@ Vue.use(VueResource);
 import VueSession from 'vue-session';
 Vue.use(VueSession);
 
-Vue.http.options.emulateJSON = true;
+import VeeValidate from 'vee-validate';
+Vue.use(VeeValidate);
+
+// Vue.http.options.emulateJSON = true;
+// Vue.http.options.emulateHTTP = true;
 
 const routes = [
     {
@@ -32,11 +35,6 @@ const routes = [
         path: "/projects",
         name: "projects",
         component: Projects
-    },
-    {
-        path: "/login",
-        name: "login",
-        component: Login
     },
     {
         path: "/signup",

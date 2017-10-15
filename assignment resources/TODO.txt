@@ -21,6 +21,9 @@
 - password valid as long not empty string
 - unique email and valid format
 - logged in as soon as registered
+? show warning (red input) when field warning
+? confirm password
+? clear warning when switching tab
 
 ## Story 4 - Login/Logout
 - login using username + password
