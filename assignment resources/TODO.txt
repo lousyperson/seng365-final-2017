@@ -31,6 +31,7 @@
 / login using username + password
 / logged in person can log out. remove authentication
 / only one person logged in at a time
+? try login with email
 
 ## Story 5 - Pledge
 - pledge only on 'open' project

@@ -81,7 +81,7 @@
                                 <label for="inputEmail" class="sr-only">Email address</label>
                                 <div class="input-group mb-2 mr-sm-2 mb-sm-0">
                                     <div class="input-group-addon" style="width: 2.6rem"><i class="fa fa-envelope"></i></div>
-                                    <input v-model="registerEmail" v-validate="'required|email'" type="text"
+                                    <input v-model="registerEmail" type="text"
                                            :class="{ 'form-control': true, 'input': true, 'has-danger': errors.has('email')}"
                                            id="inputEmail" placeholder="Enter email"/>
                                     <span v-show="errors.has('email')" class="text-danger">{{ errors.first('email') }}</span>
@@ -94,7 +94,7 @@
                                 <label for="inputUsername" class="sr-only">Username</label>
                                 <div class="input-group mb-2 mr-sm-2 mb-sm-0">
                                     <div class="input-group-addon" style="width: 2.6rem"><i class="fa fa-user"></i></div>
-                                    <input v-model="registerUsername" v-validate="'required|alpha_dash'" type="text"
+                                    <input v-model="registerUsername" type="text"
                                            :class="{ 'form-control': true, 'input': true, 'has-danger': errors.has('alpha_dash')}"
                                            id="inputUsername" placeholder="Username"/>
                                     <span v-show="errors.has('alpha_dash')" class="text-danger">{{ errors.first('alpha_dash') }}</span>
@@ -107,7 +107,7 @@
                                 <label for="inputPassword" class="sr-only">Password</label>
                                 <div class="input-group mb-2 mr-sm-2 mb-sm-0">
                                     <div class="input-group-addon" style="width: 2.6rem"><i class="fa fa-lock"></i></div>
-                                    <input v-model="registerPassword" v-validate="'required|alpha_num'" type="password"
+                                    <input v-model="registerPassword" type="password"
                                            :class="{ 'form-control': true, 'input': true, 'has-danger': errors.has('alpha_num')}"
                                            id="inputPassword" placeholder="Password"/>
                                 </div>
@@ -164,12 +164,21 @@
                 this.$router.go(-1);
             }
         },
+        created() {
+            this.$validator.attach('registerEmail', 'required|email');
+            this.$validator.attach('registerUsername', 'required|alpha_dash');
+            this.$validator.attach('registerPassword', 'required|alpha_num');
+        },
         methods: {
             validateBeforeSubmit: function () {
                 this.errorFlag = false;
-                this.$validator.validateAll().then((result) => {
+                this.$validator.validateAll({
+                    registerEmail: this.registerEmail,
+                    registerUsername: this.registerUsername,
+                    registerPassword: this.registerPassword
+                }).then((result) => {
                     if (result) {
-                        if (this.registerEmail !== null && this.registerUsername !== null && this.registerPassword !== null) {
+                        if (this.registerEmail.length > 0 && this.registerUsername.length > 0 && this.registerPassword.length > 0) {
                             this.register();
                         }
                     } else {
