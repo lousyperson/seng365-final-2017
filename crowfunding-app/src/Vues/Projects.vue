@@ -7,35 +7,26 @@
 
         <h1>{{ pageTitle }}</h1>
         <input type="text" id="filterInput" v-on:keyup="filterFunction" placeholder="Filter project..." />
+        <br /><br />
 
-        <div v-if="errorFlag" style="color: red;">
-            {{ error }}
-        </div>
+        <div class="container">
+            <div id="projects" class="row">
+                <div class="col-lg-4" v-for="project in projects">
+                    <div class="card">
+                        <div v-if="project.open === true" class="projectsRow" :title="getProjectTitle(project.title + ' ' + project.subtitle)">
+                            <div class="card-img-top" :style="{ background: 'url(' + getImage(project.id) + ') 50% 50% no-repeat', width: '100%', height: '250px' }">
+                                <!--<img class="card-img-top" :src="getImage(project.id)" height="600px" />-->
+                            </div>
 
-        <div id="projects">
-            <table>
-                <!--TODO Check closed projects-->
-                <thead>
-                    <tr>
-                        <td>Project ID</td>
-                        <td>Project Title</td>
-                        <td>Project Subtitle</td>
-                        <td>Project Image</td>
-                    </tr>
-                </thead>
-                <tbody v-for="project in projects">
-                    <tr v-if="project.open === true" class="projectsRow" :title="getProjectTitle(project.title + ' ' + project.subtitle)">
-                        <td :id="project.id">{{ project.id }}</td>
-                        <td><router-link :to="{ name: 'project', params: { projectId: project.id }}">{{ project.title }}</router-link></td>
-                        <td>{{ project.subtitle }}</td>
-                        <td>
-                            <a class="lightbox" href="#projImg">
-                                <img :src="getImage(project.id)" height="100" v-on:click="projectId = project.id"/>
-                            </a>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+                            <div class="card-body">
+                                <h4 class="card-title"><router-link :to="{ name: 'project', params: { projectId: project.id }}">{{ project.title }}</router-link></h4>
+                                <p class="card-text">{{ project.subtitle }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+            </div>
         </div>
     </div>
 </template>

@@ -40,6 +40,7 @@
 
         <br/><br/>
         <router-view></router-view>
+        <br/><br/>
     </div>
 </template>
 
@@ -249,18 +250,18 @@
         /*width: 150px;*/
     /*}*/
 
-    /*table, th, td {*/
-        /*border: 1px solid black;*/
-    /*}*/
+    table, th, td {
+        border: 1px solid black;
+    }
 
-    /*th, td {*/
-        /*padding: 15px;*/
-        /*text-align: left;*/
-    /*}*/
+    th, td {
+        padding: 15px;
+        text-align: left;
+    }
 
-    /*thead {*/
-        /*font-weight: bold;*/
-        /*background-color: #3fa338;*/
-        /*color: #FFFFFF;*/
-    /*}*/
+    thead {
+        font-weight: bold;
+        background-color: #3fa338;
+        color: #FFFFFF;
+    }
 </style>

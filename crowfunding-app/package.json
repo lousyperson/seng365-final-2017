@@ -9,6 +9,7 @@
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
   },
   "dependencies": {
+    "moment": "^2.19.1",
     "urijs": "^1.19.0",
     "vee-validate": "^2.0.0-rc.19",
     "vue": "^2.4.4",
