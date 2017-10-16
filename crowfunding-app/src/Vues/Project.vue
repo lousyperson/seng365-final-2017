@@ -42,7 +42,7 @@
 
         <!-- The modal -->
         <div class="modal fade" id="pledgeModal" tabindex="-1" role="dialog" aria-labelledby="modalLabelLarge" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
+            <div class="modal-dialog modal-md">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h4 class="modal-title">Pledge details</h4>

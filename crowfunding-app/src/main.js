@@ -4,6 +4,7 @@ import Home from './Vues/Home.vue';
 import Project from './Vues/Project.vue';
 import Projects from './Vues/Projects.vue';
 import Signup from './Vues/Signup.vue'
+import Profile from './Vues/Profile.vue'
 
 import VueRouter from 'vue-router';
 Vue.use(VueRouter);
@@ -40,6 +41,11 @@ const routes = [
         path: "/signup",
         name: "signup",
         component: Signup
+    },
+    {
+        path: "/profile",
+        name: "profile",
+        component: Profile
     }
 ];
 

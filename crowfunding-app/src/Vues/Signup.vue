@@ -17,19 +17,8 @@
                 <!--Login Tab-->
                 <div class="tab-pane fade show active" id="login" role="tabpanel" aria-labelledby="login-tab">
                     <form @submit.prevent="checkLogin">
-                        <div class="row" id="loginFormEmail">
-                            <div class="col-md-3"></div>
-                            <div class="col-md-6 form-group has-danger">
-                                <label for="loginEmail" class="sr-only">Email address</label>
-                                <div class="input-group mb-2 mr-sm-2 mb-sm-0">
-                                    <div class="input-group-addon" style="width: 2.6rem"><i class="fa fa-envelope"></i></div>
-                                    <input v-model="loginEmail" v-validate="'required|email'" name="loginEmail" type="text"
-                                           :class="{ 'form-control': true, 'input': true, 'has-danger': errors.has('email')}"
-                                           id="loginEmail" placeholder="Enter email"/>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row" id="loginFormUsername" style="display: none">
+                        <!--Username-->
+                        <div class="row" id="loginFormUsername">
                             <div class="col-md-3"></div>
                             <div class="col-md-6 form-group has-danger">
                                 <label for="loginUsername" class="sr-only">Username</label>
@@ -41,17 +30,30 @@
                                 </div>
                             </div>
                         </div>
+                        <!--Email-->
+                        <div class="row" id="loginFormEmail" style="display: none">
+                            <div class="col-md-3"></div>
+                            <div class="col-md-6 form-group has-danger">
+                                <label for="loginEmail" class="sr-only">Email address</label>
+                                <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+                                    <div class="input-group-addon" style="width: 2.6rem"><i class="fa fa-envelope"></i></div>
+                                    <input v-model="loginEmail" v-validate="'required|email'" name="loginEmail" type="text"
+                                           :class="{ 'form-control': true, 'input': true, 'has-danger': errors.has('email')}"
+                                           id="loginEmail" placeholder="Enter email"/>
+                                </div>
+                            </div>
+                        </div>
                         Log in with:
                         <div class="form-check form-check-inline">
                             <label class="form-check-label">
-                                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="emailRadio"
-                                       value="email" checked> Email
+                                <input class="form-check-input" type="radio" name="inlineRadioOptions"
+                                       id="usernameRadio" value="username" checked> Username
                             </label>
                         </div>
                         <div class="form-check form-check-inline">
                             <label class="form-check-label">
-                                <input class="form-check-input" type="radio" name="inlineRadioOptions"
-                                       id="usernameRadio" value="username"> Username
+                                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="emailRadio"
+                                       value="email"> Email
                             </label>
                         </div>
                         <div class="row">
@@ -161,7 +163,8 @@
         beforeCreate() {
             this.session = this.$session ? this.$session.exists() : null;
             if (this.session) {
-                this.$router.go(-1);
+                this.$router.push('/');
+                this.$router.go(0);
             }
         },
         created() {
@@ -247,8 +250,10 @@
                 this.$http.post(url.toString()).then(function (response) {
                     if (response.status === 200) {
                         this.$session.start();
-                        this.$session.set('X-Authorization', response.data.token);
-                        this.$router.go(-1);
+                        this.$session.set('id', response.data.id);
+                        this.$session.set('token', response.data.token);
+                        this.$router.push('/');
+                        this.$router.go(0);
                     }
                 }, function (error) {
                     console.log(error);
