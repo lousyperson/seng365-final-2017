@@ -71,7 +71,7 @@
                             <div class="form-check">
                                 Pledge anonymously:
                                 <label class="form-check-label">
-                                    <input class="form-check-input" type="checkbox" id="anonCheckbox" value="anon">
+                                    <input class="form-check-input" type="checkbox" id="anonCheckbox" name="anonCheckbox" value="anon">
                                 </label>
                             </div>
 
@@ -158,8 +158,12 @@
 
 <script>
     import moment from 'moment';
+    import Vue from "../main.js";
 
     export default {
+        component: {
+            Vue
+        },
         data() {
             return {
                 error: "",
@@ -212,9 +216,34 @@
             },
             checkPledgeDetails: function () {
                 this.pledgeErrorFlag = false;
+
+                let anonCheckbox = $("input[name='anonCheckbox']:checked").val() === 'anon';
+
                 this.$validator.validateAll().then((result) => {
                     if (result) {
+                        let payload = {
+                            "id": this.$session.get('id'),
+                            "amount": this.pledgeAmount,
+                            "anonymous": anonCheckbox,
+                            "card": {
+                                "authToken": this.pledgeCard.toString()
+                            }
+                        };
 
+                        this.$http.post('http://localhost:4941/api/v2/projects/' + this.project.id + '/pledge', payload, {
+                            headers: {'X-Authorization': this.$session.get('token')}
+                        }).then(response => {
+                            if (response.status === 201) {
+//                                this.$router.push('/projects/' + this.project.id);
+                                this.$router.go(0);
+                            } else {
+                                this.pledgeError = "Pledge failed.";
+                                this.pledgeErrorFlag = true;
+                            }
+                        }, response => {
+                            this.pledgeError = "Pledge failed.";
+                            this.pledgeErrorFlag = true;
+                        });
                     } else {
                         this.pledgeError = "Please correct your details.";
                         this.pledgeErrorFlag = true;
@@ -230,5 +259,13 @@
         font-weight: bold;
         background-color: #3fa338;
         color: #FFFFFF;
+    }
+
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        margin: 0;
     }
 </style>
