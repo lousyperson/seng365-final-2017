@@ -13,7 +13,6 @@
 - backer name + pledge amount for 5 most recent must be shown
 - anonymous group together
 ? currentPledge undefined
-? table with <br /> tag has little line at the bottom
 
 ## Story 3 - User
 / unauthenticated person can register given username, email, password, location (optional)

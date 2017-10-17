@@ -26,21 +26,52 @@
         </div>
         <br /><br />
 
-        <h4>Target goal progress by <a v-on:click="showBackers">{{ project.progress.numberOfBackers }}</a> backers:</h4>
+        <h4>Target goal progress by <a v-on:click="showBackers" href="#">{{ project.progress.numberOfBackers }}</a> backers:</h4>
         <div class="progress row">
-            <div class="progress-bar progress-bar-striped" role="progressbar" :style="{ width: progressbarPercent, height: '40px' }">
-                <span>
-                    {{ project.progress.currentPledged.toLocaleString(undefined, {style: "currency", currency: "NZD"}) }} of {{ project.target.toLocaleString(undefined, {style: "currency", currency: "NZD"}) }}
-                </span>
+            <div class="progress-bar progress-bar-striped" role="progressbar" :style="{ width: progressbarPercent + '%' }">
+                <label>{{ (project.progress.currentPledged / project.target * 100).toFixed(2) }} %</label>
             </div>
         </div>
         <br />
+        <span>{{ project.progress.currentPledged.toLocaleString(undefined, {style: "currency", currency: "NZD"}) }} of {{ project.target.toLocaleString(undefined, {style: "currency", currency: "NZD"}) }}</span>
+        <br /><br />
         <button class="btn btn-primary" data-toggle="modal" data-target="#pledgeModal">
             Pledge this project!
         </button>
         <br /><br /><br />
 
-        <!-- The modal -->
+        <!-- The backer modal -->
+        <div class="modal fade" id="backerModal" tabindex="-1" role="dialog" aria-labelledby="modalLabelLarge" aria-hidden="true">
+            <div class="modal-dialog modal-md">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Backers</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col">
+                                <h4>Top backers</h4>
+                                <br />
+                                <p v-for="([name, amount], pos) in topBackersArray" style="text-align: left;"><b>{{ pos + 1}}. {{ name }}:</b> {{ amount }}</p>
+                            </div>
+                            <div class="col">
+                                <h4>Recent backers</h4>
+                                <br />
+                                <p v-for="line in recentBackersArray" style="text-align: left;">
+                                    <b>{{ line.username }}</b>: {{ line.amount.toLocaleString(undefined, {style: "currency", currency: "NZD"}) }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- The pledge modal -->
         <div class="modal fade" id="pledgeModal" tabindex="-1" role="dialog" aria-labelledby="modalLabelLarge" aria-hidden="true">
             <div class="modal-dialog modal-md">
                 <div class="modal-content">
@@ -178,7 +209,9 @@
                 pledgeCVV: null,
                 pledgeExpiry: null,
                 pledgeErrorFlag: false,
-                pledgeError: ''
+                pledgeError: '',
+                topBackersArray: [],
+                recentBackersArray: []
             }
         },
         mounted: function () {
@@ -188,7 +221,8 @@
             this.$http.get('http://localhost:4941/api/v2/projects/' + this.$route.params.projectId)
                 .then(function (response) {
                     this.project = response.data;
-                    this.progressbarPercent = this.project.progress.currentPledged * 100 / this.project.target;
+                    let calcPercent = this.project.progress.currentPledged * 100 / this.project.target
+                    this.progressbarPercent = calcPercent > 100 ? 100 : calcPercent;
 
                     this.project.creators.forEach((value, index, listObj) => {
                         if (index === 0) {
@@ -198,7 +232,33 @@
                         }
                     });
 
-                    this.creationDateString = moment(this.project.creationDate).format('MMMM Do YYYY')
+                    let tempBackersSum = {};
+                    this.project.backers.forEach((value, index, listObj) => {
+                        if (index < 5) {
+                            let pos = index + 1;
+                            this.recentBackersArray.push({
+                                username: pos + '. ' + value.username,
+                                amount: value.amount
+                            });
+                        }
+                        let tempName = value.username;
+                        if (tempBackersSum[tempName]) {
+                            tempBackersSum[tempName] += value.amount;
+                        } else {
+                            tempBackersSum[tempName] = value.amount;
+                        }
+                    });
+                    let items = Object.keys(tempBackersSum).map(function(key) {
+                        return [key, tempBackersSum[key]];
+                    });
+
+                    items.sort(function(first, second) {
+                        return second[1] - first[1];
+                    });
+
+                    this.topBackersArray = items.slice(0, 5);
+
+                    this.creationDateString = moment(this.project.creationDate).format('MMMM Do YYYY');
                 }, function (error) {
                     this.error = error;
                     this.errorFlag = true;
@@ -212,7 +272,7 @@
                 return 'http://localhost:4941/api/v2/projects/' + id + '/image'
             },
             showBackers: function () {
-                alert();
+                $('#backerModal').modal('show');
             },
             checkPledgeDetails: function () {
                 this.pledgeErrorFlag = false;
@@ -223,7 +283,7 @@
                     if (result) {
                         let payload = {
                             "id": this.$session.get('id'),
-                            "amount": this.pledgeAmount,
+                            "amount": Number(this.pledgeAmount),
                             "anonymous": anonCheckbox,
                             "card": {
                                 "authToken": this.pledgeCard.toString()
@@ -234,15 +294,19 @@
                             headers: {'X-Authorization': this.$session.get('token')}
                         }).then(response => {
                             if (response.status === 201) {
-//                                this.$router.push('/projects/' + this.project.id);
                                 this.$router.go(0);
                             } else {
                                 this.pledgeError = "Pledge failed.";
                                 this.pledgeErrorFlag = true;
                             }
                         }, response => {
-                            this.pledgeError = "Pledge failed.";
-                            this.pledgeErrorFlag = true;
+                            if (response.status === 403) {
+                                this.pledgeError = "You are the owner of project.";
+                                this.pledgeErrorFlag = true;
+                            } else {
+                                this.pledgeError = "Pledge failed.";
+                                this.pledgeErrorFlag = true;
+                            }
                         });
                     } else {
                         this.pledgeError = "Please correct your details.";
@@ -267,5 +331,11 @@
         -moz-appearance: none;
         appearance: none;
         margin: 0;
+    }
+
+    .progress-bar {
+        height: 40px;
+        font-size: 30px;
+        line-height: 40px;
     }
 </style>
