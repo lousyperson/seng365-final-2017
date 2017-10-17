@@ -9,10 +9,10 @@
 
         <div class="row">
             <div class="col align-self-center">
-                <img :src="getImage($route.params.projectId)" />
+                <img :src="getImage($route.params.projectId)" style="max-width:640px;width: 100%;"/>
             </div>
             <div class="col align-self-center">
-                <h4>" {{ project.subtitle }} "</h4>
+                <h4><i class="fa fa-quote-left" aria-hidden="true"></i>&nbsp;&nbsp;{{ project.subtitle }}&nbsp;&nbsp;<i class="fa fa-quote-right" aria-hidden="true"></i></h4>
                 <br />
                 <p>
                     Created by:<br />

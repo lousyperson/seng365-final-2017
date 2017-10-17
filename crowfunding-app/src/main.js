@@ -3,8 +3,9 @@ import App from './Vues/App.vue';
 import Home from './Vues/Home.vue';
 import Project from './Vues/Project.vue';
 import Projects from './Vues/Projects.vue';
-import Signup from './Vues/Signup.vue'
-import Profile from './Vues/Profile.vue'
+import Signup from './Vues/Signup.vue';
+import Profile from './Vues/Profile.vue';
+import Create from './Vues/Create.vue';
 
 import VueRouter from 'vue-router';
 Vue.use(VueRouter);
@@ -46,6 +47,11 @@ const routes = [
         path: "/profile",
         name: "profile",
         component: Profile
+    },
+    {
+        path: "/create",
+        name: "create",
+        component: Create
     }
 ];
 

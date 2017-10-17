@@ -5,7 +5,11 @@
             <a class="lightbox-close" v-on:click="scrollTo(projectId)"></a>
         </div>
 
-        <h1>{{ pageTitle }}</h1>
+        <div class="row">
+            <div class="col">
+                <h1 :style="{'text-align': 'center'}">{{ pageTitle }}</h1>
+            </div>
+        </div>
         <input type="text" id="filterInput" v-on:keyup="filterFunction" placeholder="Filter project..." />
         <br /><br />
 

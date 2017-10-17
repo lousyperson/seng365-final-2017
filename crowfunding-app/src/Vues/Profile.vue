@@ -10,6 +10,7 @@
             <p><b>Profile Username:</b> {{ profileUsername }}</p>
             <p><b>Profile Location:</b> {{ profileLocation }}</p>
             <p><b>Profile Email:</b> {{ profileEmail }}</p>
+            <p><b>Profile Token:</b> {{ authToken }}</p>
         </div>
     </div>
 </template>
@@ -28,7 +29,8 @@
                 profileId: 0,
                 profileUsername: '',
                 profileLocation: '-',
-                profileEmail: ''
+                profileEmail: '',
+                authToken: ''
             }
         },
         beforeCreate() {
@@ -50,6 +52,7 @@
                     this.profileUsername = response.data.username;
                     this.profileLocation = response.data.location.length > 0 ? response.data.location : '-';
                     this.profileEmail = response.data.email;
+                    this.authToken = this.$session.get('token');
                 }, response => {
                     // error handing
                 });
