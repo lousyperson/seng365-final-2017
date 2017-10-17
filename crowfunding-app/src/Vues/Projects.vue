@@ -9,6 +9,40 @@
         <input type="text" id="filterInput" v-on:keyup="filterFunction" placeholder="Filter project..." />
         <br /><br />
 
+        <nav aria-label="Page navigation">
+            <ul class="pagination" v-if="projectsArrayLen > 0">
+                <li class="page-item">
+                    <a class="page-link" href="#" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                </li>
+                <li class="page-item" v-for="i in range(projectsArrayLen)"><a class="page-link" href="#">{{ i+1 }}</a></li>
+                <li class="page-item">
+                    <a class="page-link" href="#" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                        <span class="sr-only">Next</span>
+                    </a>
+                </li>
+            </ul>
+
+            <ul class="pagination" v-else>
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                </li>
+                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                        <span class="sr-only">Next</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
         <div class="container">
             <div id="projects" class="row">
                 <div class="col-lg-4" v-for="project in projects">
@@ -32,14 +66,22 @@
 </template>
 
 <script>
+    import Vue from "../main.js";
+    import _ from 'underscore';
+
     export default {
+        component: {
+            Vue
+        },
         data() {
             return {
                 error: "",
                 errorFlag: false,
                 projects: [],
                 projectId: 0,
-                pageTitle: 'Projects'
+                pageTitle: 'Projects',
+                projectsArray: [],
+                projectsArrayLen: 0
             }
         },
         mounted: function () {
@@ -53,6 +95,11 @@
                 this.$http.get('http://localhost:4941/api/v2/projects')
                     .then(function (response) {
                         this.projects = response.data;
+                        let group = 6;
+                        this.projectsArray = _.chain(this.projects).groupBy(function(element, index){
+                            return Math.floor(index/group);
+                        }).toArray().value();
+                        this.projectsArrayLen = this.projectsArray.length;
                     }, function (error) {
                         this.error = error;
                         this.errorFlag = true;
@@ -89,6 +136,25 @@
                 let y = window.scrollY;
                 location.hash = "#" + hash;
                 window.scrollTo(0, y);
+            },
+            
+            range: function (start, stop, step) {
+                if (typeof stop === 'undefined') {
+                    // one param defined
+                    stop = start;
+                    start = 0;
+                }
+                if (typeof step === 'undefined') {
+                    step = 1;
+                }
+                if ((step > 0 && start >= stop) || (step < 0 && start <= stop)) {
+                    return [];
+                }
+                let result = [];
+                for (let i = start; step > 0 ? i < stop : i > stop; i += step) {
+                    result.push(i);
+                }
+                return result;
             }
         }
     }

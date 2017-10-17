@@ -48,7 +48,12 @@
 </template>
 
 <script>
+    import Vue from "../main.js";
+
     export default {
+        component: {
+            Vue
+        },
         name: 'app',
         data() {
             return {
