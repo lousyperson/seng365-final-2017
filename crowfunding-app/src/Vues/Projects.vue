@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div id="app">
         <div class="lightbox-target" id="projImg">
             <img :src="getImage(projectId)"/>
             <a class="lightbox-close" v-on:click="scrollTo(projectId)"></a>
@@ -17,7 +17,7 @@
                         <span class="sr-only">Previous</span>
                     </a>
                 </li>
-                <li class="page-item" v-for="i in range(projectsArrayLen)"><a class="page-link" href="#">{{ i+1 }}</a></li>
+                <li class="page-item" v-for="i in range(projectsArrayLen)"><a class="page-link" :href="'#page' + i">{{ i+1 }}</a></li>
                 <li class="page-item">
                     <a class="page-link" href="#" aria-label="Next">
                         <span aria-hidden="true">&raquo;</span>
@@ -45,21 +45,23 @@
 
         <div class="container">
             <div id="projects" class="row">
-                <div class="col-lg-4" v-for="project in projects">
-                    <div class="card">
-                        <div v-if="project.open === true" class="projectsRow" :title="getProjectTitle(project.title + ' ' + project.subtitle)">
-                            <div class="card-img-top" :style="{ background: 'url(' + getImage(project.id) + ') 50% 50% no-repeat', width: '100%', height: '250px' }">
-                                <!--<img class="card-img-top" :src="getImage(project.id)" height="600px" />-->
-                            </div>
+                <template v-for="projectss in projectsArray">
+                    <div class="col-lg-4" v-for="project in projectss">
+                        <div class="card">
+                            <div v-if="project.open === true" class="projectsRow" :title="getProjectTitle(project.title + ' ' + project.subtitle)">
+                                <div class="card-img-top" :style="{ background: 'url(' + getImage(project.id) + ') 50% 50% no-repeat', width: '100%', height: '250px' }">
+                                    <!--<img class="card-img-top" :src="getImage(project.id)" height="600px" />-->
+                                </div>
 
-                            <div class="card-body">
-                                <h4 class="card-title"><router-link :to="{ name: 'project', params: { projectId: project.id }}">{{ project.title }}</router-link></h4>
-                                <p class="card-text">{{ project.subtitle }}</p>
+                                <div class="card-body">
+                                    <h4 class="card-title"><router-link :to="{ name: 'project', params: { projectId: project.id }}">{{ project.title }}</router-link></h4>
+                                    <p class="card-text">{{ project.subtitle }}</p>
+                                </div>
                             </div>
                         </div>
+                        <br />
                     </div>
-                    <br />
-                </div>
+                </template>
             </div>
         </div>
     </div>
