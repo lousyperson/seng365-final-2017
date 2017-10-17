@@ -1,10 +1,9 @@
 ## Story 1 - Projects
 / show title, subtitle, image in the projects list
-- check if the project is open (as long as it's not closed)
-- manage number of projects displayed if too many is in the database
+/ check if the project is open (as long as it's not closed)
+/ manage number of projects displayed if too many is in the database
 / can filter title/subtitle
 ? row has title and subtitle shown when hover
-? GET http://localhost:4941/api/v2/projects/0/image 404 (Not Found)
 ? fix filter
 
 ## Story 2 - Individual Project

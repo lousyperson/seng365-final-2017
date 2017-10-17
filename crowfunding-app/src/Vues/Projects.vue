@@ -12,33 +12,16 @@
         </div>
         <input type="text" id="filterInput" v-on:keyup="filterFunction" placeholder="Filter project..." />
         <br /><br />
-
         <nav aria-label="Page navigation">
-            <ul class="pagination" v-if="projectsArrayLen > 0">
-                <li class="page-item">
+            <ul class="pagination justify-content-center">
+                <li class="page-item" v-on:click="updateIndex(-1)">
                     <a class="page-link" href="#" aria-label="Previous">
                         <span aria-hidden="true">&laquo;</span>
                         <span class="sr-only">Previous</span>
                     </a>
                 </li>
-                <li class="page-item" v-for="i in range(projectsArrayLen)"><a class="page-link" :href="'#page' + i">{{ i+1 }}</a></li>
-                <li class="page-item">
-                    <a class="page-link" href="#" aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                        <span class="sr-only">Next</span>
-                    </a>
-                </li>
-            </ul>
-
-            <ul class="pagination" v-else>
-                <li class="page-item disabled">
-                    <a class="page-link" href="#" aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
-                        <span class="sr-only">Previous</span>
-                    </a>
-                </li>
-                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li class="page-item disabled">
+                <li class="page-item" v-for="i in range(projectsArrayLen)" v-on:click="updateIndex(null, i)" :id="i"><a class="page-link" :href="'#'">{{ i+1 }}</a></li>
+                <li class="page-item" v-on:click="updateIndex(1)">
                     <a class="page-link" href="#" aria-label="Next">
                         <span aria-hidden="true">&raquo;</span>
                         <span class="sr-only">Next</span>
@@ -49,23 +32,21 @@
 
         <div class="container">
             <div id="projects" class="row">
-                <template v-for="projectss in projectsArray">
-                    <div class="col-lg-4" v-for="project in projectss">
-                        <div class="card">
-                            <div v-if="project.open === true" class="projectsRow" :title="getProjectTitle(project.title + ' ' + project.subtitle)">
-                                <div class="card-img-top" :style="{ background: 'url(' + getImage(project.id) + ') 50% 50% no-repeat', width: '100%', height: '250px' }">
-                                    <!--<img class="card-img-top" :src="getImage(project.id)" height="600px" />-->
-                                </div>
+                <div class="col-lg-4" v-for="project in projectsArray[projectsIndex]" :projectsArray="projectsArray">
+                    <div class="card">
+                        <div v-if="project.open === true" class="projectsRow" :title="getProjectTitle(project.title + ' ' + project.subtitle)">
+                            <div class="card-img-top" :style="{ background: 'url(' + getImage(project.id) + ') 50% 50% no-repeat', width: '100%', height: '250px' }">
+                                <!--<img class="card-img-top" :src="getImage(project.id)" height="600px" />-->
+                            </div>
 
-                                <div class="card-body">
-                                    <h4 class="card-title"><router-link :to="{ name: 'project', params: { projectId: project.id }}">{{ project.title }}</router-link></h4>
-                                    <p class="card-text">{{ project.subtitle }}</p>
-                                </div>
+                            <div class="card-body">
+                                <h4 class="card-title"><router-link :to="{ name: 'project', params: { projectId: project.id }}">{{ project.title }}</router-link></h4>
+                                <p class="card-text">{{ project.subtitle }}</p>
                             </div>
                         </div>
-                        <br />
                     </div>
-                </template>
+                    <br />
+                </div>
             </div>
         </div>
     </div>
@@ -87,7 +68,8 @@
                 projectId: 0,
                 pageTitle: 'Projects',
                 projectsArray: [],
-                projectsArrayLen: 0
+                projectsArrayLen: 0,
+                projectsIndex: 0
             }
         },
         mounted: function () {
@@ -101,15 +83,25 @@
                 this.$http.get('http://localhost:4941/api/v2/projects')
                     .then(function (response) {
                         this.projects = response.data;
-                        let group = 6;
-                        this.projectsArray = _.chain(this.projects).groupBy(function(element, index){
-                            return Math.floor(index/group);
-                        }).toArray().value();
-                        this.projectsArrayLen = this.projectsArray.length;
+                        this.splitArray();
                     }, function (error) {
                         this.error = error;
                         this.errorFlag = true;
                     })
+            },
+
+            splitArray: function (newArray) {
+                let group = 6;
+                if (newArray) {
+                    this.projectsArray = _.chain(newArray).groupBy(function(element, index){
+                        return Math.floor(index/group);
+                    }).toArray().value();
+                } else {
+                    this.projectsArray = _.chain(this.projects).groupBy(function(element, index){
+                        return Math.floor(index/group);
+                    }).toArray().value();
+                }
+                this.projectsArrayLen = this.projectsArray.length;
             },
 
             getImage: function (id) {
@@ -124,18 +116,26 @@
             },
 
             filterFunction: function () {
-                let input, filter, td;
+                let input, filter;
                 input = document.getElementById('filterInput');
                 filter = input.value.toUpperCase();
-                td = document.querySelectorAll(".projectsRow");
-                td.forEach((value, index, listObj) => {
-                    let title = value.title.toUpperCase();
-                    if (title.indexOf(filter) < 0) {
-                        value.style.display = "none";
-                    } else {
-                        value.style.display = "";
-                    }
-                })
+                if (filter.length > 0) {
+                    let tempArray = [];
+                    this.projects.forEach((value, index, listObj) => {
+                        let title = value.title.toUpperCase();
+                        let subtitle = value.subtitle.toUpperCase();
+                        if (title.indexOf(filter) >= 0 || subtitle.indexOf(filter) >= 0) {
+                            tempArray.push(value);
+                        }
+                    });
+                    this.projectsArray = [];
+                    this.projectsArray.push(tempArray);
+                    this.projectsIndex = 0;
+                    this.projectsArrayLen = this.projectsArray.length;
+                    this.splitArray(tempArray)
+                } else {
+                    this.splitArray();
+                }
             },
             
             scrollTo: function (hash) {
@@ -161,6 +161,19 @@
                     result.push(i);
                 }
                 return result;
+            },
+
+            updateIndex: function (increment, value) {
+                if (increment === null && value >= 0) {
+                    this.projectsIndex = value;
+                } else {
+                    let newVal = this.projectsIndex + increment;
+                    newVal = newVal > 0 ? newVal : 0;
+                    this.projectsIndex = newVal < this.projectsArrayLen ? newVal : newVal - 1;
+                }
+
+                $('.pagination').children().removeClass('active');
+                $('#'+this.projectsIndex).addClass('active');
             }
         }
     }
