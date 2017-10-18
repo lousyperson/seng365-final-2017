@@ -1,9 +1,8 @@
 <template>
     <div id="app" class="container h-100">
         <img class="bg" src="/src/assets/bg01.jpg" />
-        <div class="row h-100 justify-content-center align-items-center">
+            <br /><br />
             <h1>Home Page</h1>
-        </div>
     </div>
 </template>
 

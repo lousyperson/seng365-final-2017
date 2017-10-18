@@ -213,10 +213,13 @@
                     }).then(response => {
                         if (response.status === 201) {
                             if (this.projImg !== null) {
-                                this.putImg(response.data.id, function () {
+                                this.putImg(this.projImg, response.data.id, function () {
                                     Vue.$router.push('/projects');
                                     Vue.$router.go(0);
                                 });
+                            } else {
+                                Vue.$router.push('/projects');
+                                Vue.$router.go(0);
                             }
                         } else {
                             this.rewardError = 'Something went wrong when submitting';
@@ -250,8 +253,8 @@
                 }
             },
 
-            putImg: function (projId, res) {
-                this.$http.put('http://localhost:4941/api/v2/projects/' + projId + '/image', this.projImg, {
+            putImg: function (img, projId, res) {
+                this.$http.put('http://localhost:4941/api/v2/projects/' + projId + '/image', img, {
                     headers: {
                         'X-Authorization': this.$session.get('token'),
                         'Content-Type': this.projImg.type

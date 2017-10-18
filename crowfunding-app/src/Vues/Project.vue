@@ -22,11 +22,19 @@
                     On:<br/>
                     {{ creationDateString }}
                 </p>
+                <br />
+                <p v-show="isCreator()">
+                    <label><b>Creator panel:</b></label>
+                    <br />
+                    <label>Project open status: {{ project.open }}</label>
+                    <br />
+                    <button class="btn btn-danger" v-on:click="closeProj" v-show="project.open">Close Project</button>
+                </p>
             </div>
         </div>
         <br /><br />
 
-        <h4>Target goal progress by <a v-on:click="showBackers" href="#">{{ project.progress.numberOfBackers }}</a> backers:</h4>
+        <h4>Target goal progress by <a v-on:click="showBackers" href="#">{{ project.progress.numberOfBackers }} backer(s):</a></h4>
         <div class="progress row">
             <div class="progress-bar progress-bar-striped" role="progressbar" :style="{ width: progressbarPercent + '%' }">
                 <label>{{ (project.progress.currentPledged / project.target * 100).toFixed(2) }} %</label>
@@ -54,12 +62,12 @@
                     <div class="modal-body">
                         <div class="row">
                             <div class="col">
-                                <h4>Top backers</h4>
+                                <h4>Top 5 backers</h4>
                                 <br />
-                                <p v-for="([name, amount], pos) in topBackersArray" style="text-align: left;"><b>{{ pos + 1}}. {{ name }}:</b> {{ amount }}</p>
+                                <p v-for="([name, amount], pos) in topBackersArray" style="text-align: left;"><b>{{ pos + 1}}. {{ name }}:</b> {{ amount.toLocaleString(undefined, {style: "currency", currency: "NZD"}) }}</p>
                             </div>
                             <div class="col">
-                                <h4>Recent backers</h4>
+                                <h4>Recent 5 backers</h4>
                                 <br />
                                 <p v-for="line in recentBackersArray" style="text-align: left;">
                                     <b>{{ line.username }}</b>: {{ line.amount.toLocaleString(undefined, {style: "currency", currency: "NZD"}) }}
@@ -113,7 +121,7 @@
                                     <label for="pledgeCard" class="sr-only">Credit card number</label>
                                     <div class="input-group mb-2 mr-sm-2 mb-sm-0">
                                         <div class="input-group-addon" style="width: 2.6em"><i class="fa fa-credit-card-alt"></i></div>
-                                        <input v-model="pledgeCard" v-validate="'required|credit_card|min:16'" type="number"
+                                        <input v-model="pledgeCard" v-validate="'required|credit_card|min:16'" type="text"
                                                :class="{ 'form-control': true, 'input': true, 'has-danger': errors.has('numeric') }"
                                                id="pledgeCard" placeholder="Credit card number"/>
                                     </div>
@@ -127,7 +135,7 @@
                                     <label for="pledgeCVV" class="sr-only">CVV</label>
                                     <div class="input-group mb-2 mr-sm-2 mb-sm-0">
                                         <div class="input-group-addon" style="width: 2.6em"><i class="fa fa-credit-card-alt"></i></div>
-                                        <input v-model="pledgeCVV" v-validate="'required|numeric|min:3'" type="number"
+                                        <input v-model="pledgeCVV" v-validate="'required|numeric|min:3'" type="text"
                                                :class="{ 'form-control': true, 'input': true, 'has-danger': errors.has('numeric') }"
                                                id="pledgeCVV" placeholder="CVV"/>
                                     </div>
@@ -268,6 +276,17 @@
 
         },
         methods: {
+            isCreator: function () {
+                let isCreator = false;
+                this.project.creators.forEach((value, index, list) => {
+                    if (this.$session.exists()) {
+                        if (value.id === this.$session.get('id')) {
+                            isCreator = true;
+                        }
+                    }
+                });
+                return isCreator;
+            },
             getImage: function (id) {
                 return 'http://localhost:4941/api/v2/projects/' + id + '/image'
             },
@@ -313,6 +332,19 @@
                         this.pledgeErrorFlag = true;
                     }
                 })
+            },
+            closeProj: function () {
+                this.$http.put('http://localhost:4941/api/v2/projects/' + this.project.id, { "open": false }, {
+                    headers: {'X-Authorization': this.$session.get('token')}
+                }).then(response => {
+                    if (response.status === 201) {
+                        this.$router.go(0);
+                    } else {
+                        alert("Project close failed");
+                    }
+                }, response => {
+                    alert("Project close failed");
+                });
             }
         }
     }
@@ -331,6 +363,15 @@
         -moz-appearance: none;
         appearance: none;
         margin: 0;
+    }
+
+    /*input[type="number"]::-webkit-outer-spin-button,*/
+    /*input[type="number"]::-webkit-inner-spin-button {*/
+        /*-webkit-appearance: none;*/
+        /*margin: 0;*/
+    /*}*/
+    input[type="number"] {
+        -moz-appearance: textfield;
     }
 
     .progress-bar {

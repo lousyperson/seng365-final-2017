@@ -10,7 +10,7 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/projects">Projects</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" v-if="session">
                         <a class="nav-link" href="/create">Create Project</a>
                     </li>
                 </ul>

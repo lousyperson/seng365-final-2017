@@ -1,10 +1,6 @@
 <template>
     <div id="app">
-        <div class="lightbox-target" id="projImg">
-            <img :src="getImage(projectId)"/>
-            <a class="lightbox-close" v-on:click="scrollTo(projectId)"></a>
-        </div>
-
+        <br /><br />
         <div class="row">
             <div class="col">
                 <h1 :style="{'text-align': 'center'}">{{ pageTitle }}</h1>
@@ -110,15 +106,25 @@
 
             splitArray: function (newArray) {
                 let group = 6;
-                if (newArray) {
-                    this.projectsArray = _.chain(newArray).groupBy(function(element, index){
-                        return Math.floor(index/group);
-                    }).toArray().value();
-                } else {
-                    this.projectsArray = _.chain(this.projects).groupBy(function(element, index){
-                        return Math.floor(index/group);
-                    }).toArray().value();
+                let checkedArrayForClose = [];
+                if (!newArray) {
+                    newArray = this.projects;
                 }
+
+                newArray.forEach((value, index, list) => {
+                    if (value.open !== null || value.open !== 'undefined') {
+                        if (value.open === true) {
+                            checkedArrayForClose.push(value);
+                        }
+                    } else {
+                        checkedArrayForClose.push(value);
+                    }
+                });
+
+                this.projectsArray = _.chain(checkedArrayForClose).groupBy(function(element, index){
+                    return Math.floor(index/group);
+                }).toArray().value();
+
                 this.projectsArrayLen = this.projectsArray.length;
             },
 

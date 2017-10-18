@@ -1,17 +1,16 @@
 ## Story 1 - Projects
 / show title, subtitle, image in the projects list
-/ check if the project is open (as long as it's not closed)
+! check if the project is open (as long as it's not closed)
 / manage number of projects displayed if too many is in the database
 / can filter title/subtitle
 ? row has title and subtitle shown when hover
-? fix filter
 
 ## Story 2 - Individual Project
 / display title, subtitle, creators, creation date, description, rewards, funding target
 / image (will be png or jpg, size is correct resolution)
-- progress towards funding goal, number of current backers, total amount pledge
-- backer name + pledge amount for 5 most recent must be shown
-- anonymous group together
+/ progress towards funding goal, number of current backers, total amount pledge
+/ backer name + pledge amount for 5 most recent must be shown
+/ anonymous group together
 ? currentPledge undefined
 
 ## Story 3 - User
@@ -23,7 +22,6 @@
 ? show warning (red input) when field warning
 ? confirm password
 ? clear warning when switching tab
-? redirect too slow
 
 ## Story 4 - Login/Logout
 / login using username + password
@@ -33,16 +31,18 @@
 
 ## Story 5 - Pledge
 - pledge only on 'open' project
-- project total increase by pledge amount
-- username shown as backer if not anonymous + amount
-- combine display amount for anonymous backer
-- number of backers must be counted for unique backers and +1 anonymous
+/ project total increase by pledge amount
+/ username shown as backer if not anonymous + amount
+/ combine display amount for anonymous backer
+/ number of backers must be counted for unique backers and +1 anonymous
+? check only open project to pledge
 
 ## Story 6 - Create/Edit Project
-- title, subtitle, creators, creation date, description, rewards, funding target, image (optional)
-- new project is mark 'Open' and only 'Open' project can receive pledge
-- 'Open' project can close
-- 'Closed' project cannot be opened
+/ title, subtitle, creators, creation date, description, rewards, funding target, image (optional)
+/ new project is mark 'Open' and only 'Open' project can receive pledge
+/ 'Open' project can close
+/ 'Closed' project cannot be opened
+? only can access page when log in
 
 ## Story 7 - Backer Viewing Projects
 - backer can view all backing projects
