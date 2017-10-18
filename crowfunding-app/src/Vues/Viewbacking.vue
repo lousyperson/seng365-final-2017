@@ -86,8 +86,12 @@
                 projectsIndex: 0
             }
         },
-        mounted: function () {
-
+        beforeCreate() {
+            this.session = this.$session ? this.$session.exists() : null;
+            if (!this.session) {
+                this.$router.push('/');
+                this.$router.go(0);
+            }
         },
         created() {
             this.getProjects();

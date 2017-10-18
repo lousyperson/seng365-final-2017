@@ -23,12 +23,16 @@
                     {{ creationDateString }}
                 </p>
                 <br />
+                <p>
+                    Project open status: {{ project.open }}
+                    <i class="fa fa-check" style="color: green;" v-if="project.open"></i>
+                    <i class="fa fa-close" style="color: red;" v-else></i>
+                </p>
                 <p v-show="isCreator()">
                     <label><b>Creator panel:</b></label>
                     <br />
-                    <label>Project open status: {{ project.open }}</label>
-                    <br />
-                    <button class="btn btn-danger" v-on:click="closeProj" v-show="project.open">Close Project</button>
+                    <button class="btn btn-danger" v-on:click="closeProj" v-if="project.open">Close Project</button>
+                    <button class="btn btn-danger" v-on:click="closeProj" v-else disabled>Close Project</button>
                 </p>
             </div>
         </div>
