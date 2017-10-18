@@ -45,5 +45,5 @@
 ? only can access page when log in
 
 ## Story 7 - Backer Viewing Projects
-- backer can view all backing projects
-- creator can view all projects which is creator
+/ backer can view all backing projects
+/ creator can view all projects which is creator

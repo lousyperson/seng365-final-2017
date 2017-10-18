@@ -6,6 +6,8 @@ import Projects from './Vues/Projects.vue';
 import Signup from './Vues/Signup.vue';
 import Profile from './Vues/Profile.vue';
 import Create from './Vues/Create.vue';
+import Viewbacking from './Vues/Viewbacking.vue';
+import Viewcreated from './Vues/Viewcreated.vue';
 
 import VueRouter from 'vue-router';
 Vue.use(VueRouter);
@@ -52,7 +54,17 @@ const routes = [
         path: "/create",
         name: "create",
         component: Create
-    }
+    },
+    {
+        path: '/viewbacking',
+        name: 'viewbacking',
+        component: Viewbacking
+    },
+    {
+        path: '/viewcreated',
+        name: 'viewcreated',
+        component: Viewcreated
+    },
 ];
 
 const router = new VueRouter({

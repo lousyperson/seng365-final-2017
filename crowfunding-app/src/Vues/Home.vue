@@ -1,8 +1,10 @@
 <template>
     <div id="app" class="container h-100">
         <img class="bg" src="/src/assets/bg01.jpg" />
-            <br /><br />
-            <h1>Home Page</h1>
+        <br /><br />
+        <h1>Home Page</h1>
+        <br /><br />
+        <button class="btn btn-primary btn-lg" v-on:click="gotoprojects()">Go to projects →</button>
     </div>
 </template>
 
@@ -18,6 +20,12 @@
                 session: null
             }
         },
+        methods: {
+            gotoprojects: function () {
+                this.$router.push('/projects');
+//                this.$router.go(0);
+            }
+        }
     }
 </script>
 

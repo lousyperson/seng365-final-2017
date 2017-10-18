@@ -21,6 +21,12 @@
                 </ul>
                 <ul class="nav navbar-nav ml-auto" v-else>
                     <li class="nav-item">
+                        <a class="nav-link" href="/viewcreated">View Created</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/viewbacking">View Backing</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="/profile">Profile</a>
                     </li>
                     <li class="nav-item">

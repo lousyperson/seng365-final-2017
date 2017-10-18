@@ -3,7 +3,7 @@
         <br /><br />
         <div class="row">
             <div class="col">
-                <h1 :style="{'text-align': 'center'}">{{ pageTitle }}</h1>
+                <h1 :style="{'text-align': 'center'}">Projects Backed</h1>
             </div>
         </div>
         <input type="text" id="filterInput" v-on:keyup="filterFunction" placeholder="Filter project..." />
@@ -94,7 +94,7 @@
         },
         methods: {
             getProjects: function () {
-                this.$http.get('http://localhost:4941/api/v2/projects?open=true')
+                this.$http.get('http://localhost:4941/api/v2/projects?backer=' + this.$session.get('id'))
                     .then(function (response) {
                         this.projects = response.data;
                         this.splitArray();
@@ -150,7 +150,7 @@
                     this.splitArray();
                 }
             },
-            
+
             range: function (start, stop, step) {
                 if (typeof stop === 'undefined') {
                     // one param defined
