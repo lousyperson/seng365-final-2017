@@ -43,7 +43,7 @@
         <br />
         <span>{{ project.progress.currentPledged.toLocaleString(undefined, {style: "currency", currency: "NZD"}) }} of {{ project.target.toLocaleString(undefined, {style: "currency", currency: "NZD"}) }}</span>
         <br /><br />
-        <button class="btn btn-primary" data-toggle="modal" data-target="#pledgeModal">
+        <button class="btn btn-primary" data-toggle="modal" data-target="#pledgeModal" v-show="showPledgeButtonFlag">
             Pledge this project!
         </button>
         <br /><br /><br />
@@ -219,7 +219,8 @@
                 pledgeErrorFlag: false,
                 pledgeError: '',
                 topBackersArray: [],
-                recentBackersArray: []
+                recentBackersArray: [],
+                showPledgeButtonFlag: false
             }
         },
         mounted: function () {
@@ -267,6 +268,8 @@
                     this.topBackersArray = items.slice(0, 5);
 
                     this.creationDateString = moment(this.project.creationDate).format('MMMM Do YYYY');
+
+                    this.showPledgeButtonFlag = !!(this.$session.exists() && this.project.open && !this.isCreator());
                 }, function (error) {
                     this.error = error;
                     this.errorFlag = true;
