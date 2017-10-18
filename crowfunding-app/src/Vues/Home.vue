@@ -23,7 +23,7 @@
         methods: {
             gotoprojects: function () {
                 this.$router.push('/projects');
-//                this.$router.go(0);
+                this.$router.go(0);
             }
         }
     }
