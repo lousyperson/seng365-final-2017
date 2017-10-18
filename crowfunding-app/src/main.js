@@ -4,7 +4,6 @@ import Home from './Vues/Home.vue';
 import Project from './Vues/Project.vue';
 import Projects from './Vues/Projects.vue';
 import Signup from './Vues/Signup.vue';
-import Profile from './Vues/Profile.vue';
 import Create from './Vues/Create.vue';
 import Viewbacking from './Vues/Viewbacking.vue';
 import Viewcreated from './Vues/Viewcreated.vue';
@@ -44,11 +43,6 @@ const routes = [
         path: "/signup",
         name: "signup",
         component: Signup
-    },
-    {
-        path: "/profile",
-        name: "profile",
-        component: Profile
     },
     {
         path: "/create",

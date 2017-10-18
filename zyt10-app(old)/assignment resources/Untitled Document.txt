@@ -1,5 +1,0 @@
-http://editor.swagger.io
-
-mysql --port=6033 --protocol=tcp --user=root -p
-
-docker exec -it some-mysql mysql -uroot -p
